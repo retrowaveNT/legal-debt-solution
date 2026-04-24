@@ -22,6 +22,9 @@ import {
 import { Button } from "@/components/ui/button";
 import { Countdown } from "@/components/landing/Countdown";
 import { RegistrationForm } from "@/components/landing/RegistrationForm";
+import { LeadMagnet } from "@/components/landing/LeadMagnet";
+import { FAQ } from "@/components/landing/FAQ";
+import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
 // Webinar date — ближайшая среда, 19:00
@@ -410,6 +413,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ============ ЛИД-МАГНИТ: PDF-ГАЙД ============ */}
+      <LeadMagnet />
+
       {/* ============ 8 + 9. ФОРМА + ТАЙМЕР ============ */}
       <section id="register" className="py-20 lg:py-28 bg-gradient-hero text-primary-foreground relative overflow-hidden">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-accent/10 blur-3xl" />
@@ -452,6 +458,9 @@ const Index = () => {
         </div>
       </section>
 
+      {/* ============ FAQ ============ */}
+      <FAQ />
+
       {/* ============ 10. ФИНАЛЬНЫЙ ДОЖИМ ============ */}
       <section className="py-20 lg:py-28 bg-background">
         <div className="container mx-auto px-4">
@@ -481,9 +490,17 @@ const Index = () => {
             <span className="font-display font-bold text-primary-foreground">Lex Ratio</span>
             <span className="opacity-60">© {new Date().getFullYear()}</span>
           </div>
-          <div className="text-xs text-center sm:text-right max-w-md leading-relaxed">
-            Информация на сайте носит ознакомительный характер и не является юридической консультацией.
-            Каждая ситуация индивидуальна.
+          <div className="flex flex-col sm:items-end gap-2">
+            <Link
+              to="/privacy"
+              className="text-primary-foreground/80 hover:text-primary-foreground underline underline-offset-2 transition-smooth"
+            >
+              Политика конфиденциальности
+            </Link>
+            <div className="text-xs text-center sm:text-right max-w-md leading-relaxed">
+              Информация на сайте носит ознакомительный характер и не является юридической консультацией.
+              Каждая ситуация индивидуальна.
+            </div>
           </div>
         </div>
       </footer>
