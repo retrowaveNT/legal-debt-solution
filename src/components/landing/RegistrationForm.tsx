@@ -1,11 +1,12 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { CheckCircle2, Lock, ShieldCheck } from "lucide-react";
+import { BellOff, CheckCircle2, Lock, ShieldCheck } from "lucide-react";
 
 const schema = z.object({
   name: z
@@ -60,6 +61,7 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
       onSubmit={handleSubmit(onSubmit)}
       className={`rounded-2xl bg-card border border-border ${compact ? "p-6" : "p-6 sm:p-8"} shadow-card`}
       noValidate
+      autoComplete="on"
     >
       <div className="space-y-4">
         <div>
@@ -68,6 +70,9 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
             id="name"
             placeholder="Как к вам обращаться?"
             className="mt-1.5 h-12 rounded-xl"
+            autoComplete="given-name"
+            autoCapitalize="words"
+            spellCheck={false}
             {...register("name")}
           />
           {errors.name && <p className="text-xs text-destructive mt-1">{errors.name.message}</p>}
@@ -80,6 +85,7 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
             inputMode="tel"
             placeholder="+7 (___) ___-__-__"
             className="mt-1.5 h-12 rounded-xl"
+            autoComplete="tel"
             {...register("phone")}
           />
           {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone.message}</p>}
@@ -91,6 +97,9 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
             type="email"
             placeholder="you@example.com"
             className="mt-1.5 h-12 rounded-xl"
+            autoComplete="email"
+            inputMode="email"
+            spellCheck={false}
             {...register("email")}
           />
           {errors.email && <p className="text-xs text-destructive mt-1">{errors.email.message}</p>}
@@ -106,15 +115,28 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
           {isSubmitting ? "Отправляем..." : "Принять участие"}
         </Button>
 
-        <div className="flex items-start gap-2 pt-1">
-          <Lock className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Нажимая кнопку, вы соглашаетесь с политикой конфиденциальности. Ваши данные защищены и не передаются третьим лицам.
-          </p>
-        </div>
-        <div className="flex items-center gap-2 pt-1 text-xs text-muted-foreground">
-          <ShieldCheck className="h-3.5 w-3.5 text-accent" />
-          Регистрация бесплатна
+        <div className="space-y-2 pt-2">
+          <div className="flex items-start gap-2">
+            <Lock className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              Нажимая кнопку, вы соглашаетесь с{" "}
+              <Link to="/privacy" className="text-primary underline underline-offset-2 hover:text-accent transition-smooth">
+                политикой конфиденциальности
+              </Link>
+              . Данные защищены и не передаются третьим лицам.
+            </p>
+          </div>
+          <div className="flex items-start gap-2">
+            <BellOff className="h-3.5 w-3.5 text-accent mt-0.5 shrink-0" />
+            <p className="text-xs text-muted-foreground leading-relaxed">
+              <span className="text-primary font-medium">Без спама.</span> Только материалы по теме вебинара —
+              отписка в один клик из любого письма.
+            </p>
+          </div>
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <ShieldCheck className="h-3.5 w-3.5 text-accent" />
+            Регистрация бесплатна
+          </div>
         </div>
       </div>
     </form>
