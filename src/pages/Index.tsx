@@ -222,7 +222,7 @@ const Index = () => {
 
           <motion.p
             {...fadeUp}
-            className="text-center mt-12 text-xl sm:text-2xl font-display font-semibold text-primary/80"
+            className="text-center mt-8 text-xl sm:text-2xl font-display font-semibold text-primary/80"
           >
             Вы&nbsp;не один в&nbsp;этой ситуации.
           </motion.p>
@@ -230,7 +230,7 @@ const Index = () => {
       </section>
 
       {/* ============ 3. ИНСАЙТ ============ */}
-      <section className="py-20 lg:py-32 bg-gradient-hero text-primary-foreground relative overflow-hidden">
+      <section className="py-14 lg:py-20 bg-gradient-hero text-primary-foreground relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "32px 32px",
