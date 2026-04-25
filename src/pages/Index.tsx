@@ -462,10 +462,10 @@ const Index = () => {
       </section>
 
       {/* ============ 7. ЮРИДИЧЕСКАЯ ЧЕСТНОСТЬ ============ */}
-      <section className="py-20 lg:py-24 bg-surface">
+      <section className="py-12 lg:py-16 bg-surface">
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="max-w-4xl mx-auto">
-            <div className="rounded-3xl bg-card border border-border p-8 sm:p-12 shadow-soft">
+            <div className="rounded-3xl bg-card border border-border p-6 sm:p-8 shadow-soft">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-12 w-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center">
                   <Scale className="h-6 w-6" />
