@@ -77,7 +77,7 @@ const Index = () => {
         <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-primary-glow/40 blur-3xl" />
 
-        <nav className="relative z-10 container mx-auto px-4 py-6 flex items-center justify-between">
+        <nav className="relative z-10 container mx-auto px-4 py-4 flex items-center justify-between">
           <Logo variant="light" />
           <div className="hidden md:flex items-center gap-2 text-sm text-primary-foreground/70">
             <Calendar className="h-4 w-4" />
@@ -85,7 +85,7 @@ const Index = () => {
           </div>
         </nav>
 
-        <div className="relative z-10 container mx-auto px-4 pt-8 pb-20 lg:pt-16 lg:pb-32 grid lg:grid-cols-12 gap-12 items-center">
+        <div className="relative z-10 container mx-auto px-4 pt-6 pb-14 lg:pt-10 lg:pb-20 grid lg:grid-cols-12 gap-8 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
