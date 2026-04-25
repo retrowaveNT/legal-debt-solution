@@ -57,19 +57,19 @@ export const LeadMagnet = () => {
             transition={{ duration: 0.6 }}
             className="lg:col-span-7"
           >
-            <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 text-accent px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-5">
+            <div className="inline-flex items-center gap-2 rounded-full bg-accent/15 text-accent px-4 py-1.5 text-xs font-semibold uppercase tracking-wider mb-3">
               <Download className="h-3.5 w-3.5" />
               Бесплатный PDF-гайд
             </div>
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-5 text-balance leading-tight">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-3 text-balance leading-tight">
               5 законных вариантов решения долгов&nbsp;— в&nbsp;одном PDF
             </h2>
-            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
+            <p className="text-lg text-muted-foreground mb-5 leading-relaxed">
               Краткий обзор каждого пути, возможные последствия и&nbsp;чек-лист «Первые&nbsp;7&nbsp;шагов».
               Можно сохранить и&nbsp;вернуться позже.
             </p>
 
-            <ul className="space-y-3 mb-8">
+            <ul className="space-y-2 mb-5">
               {features.map((f) => (
                 <li key={f} className="flex items-start gap-3 text-foreground/85">
                   <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
