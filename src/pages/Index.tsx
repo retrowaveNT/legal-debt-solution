@@ -3,14 +3,19 @@ import {
   AlertTriangle,
   ArrowRight,
   Award,
+  BadgeCheck,
+  BookOpen,
+  Briefcase,
   Calendar,
   CheckCircle2,
   Clock,
   CreditCard,
+  FileText,
   HelpCircle,
   Layers,
   ListChecks,
   Lock,
+  MessageSquare,
   Play,
   Scale,
   Shield,
@@ -25,6 +30,7 @@ import { Countdown } from "@/components/landing/Countdown";
 import { RegistrationForm } from "@/components/landing/RegistrationForm";
 import { LeadMagnet } from "@/components/landing/LeadMagnet";
 import { FAQ } from "@/components/landing/FAQ";
+import { SpeakerSlider } from "@/components/landing/SpeakerSlider";
 import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
@@ -136,28 +142,42 @@ const Index = () => {
           >
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-accent rounded-3xl opacity-20 blur-2xl" />
-              <div className="relative rounded-3xl overflow-hidden shadow-glow border border-primary-foreground/10">
-                <img
-                  src={speakerImg}
-                  alt="Спикер вебинара — практикующий юрист"
-                  width={896}
-                  height={1152}
-                  className="w-full h-auto object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/20 to-transparent" />
-                <button
-                  onClick={scrollToForm}
-                  aria-label="Смотреть видео-обращение"
-                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 h-16 w-16 rounded-full bg-accent text-accent-foreground flex items-center justify-center shadow-accent hover:scale-110 transition-smooth"
-                >
-                  <Play className="h-6 w-6 ml-1" fill="currentColor" />
-                </button>
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <div className="text-xs uppercase tracking-wider text-accent font-semibold mb-1">
-                    Спикер
+              <div className="relative rounded-3xl bg-background text-foreground border border-primary-foreground/10 shadow-glow overflow-hidden">
+                <div className="relative aspect-[4/5] sm:aspect-[5/6] overflow-hidden">
+                  <img
+                    src={speakerImg}
+                    alt="Александр Вячеславович — практикующий юрист, спикер вебинара"
+                    width={896}
+                    height={1152}
+                    className="absolute inset-0 h-full w-full object-cover object-top"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                  <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 backdrop-blur px-3 py-1 text-xs font-semibold text-primary shadow-soft">
+                    <BadgeCheck className="h-3.5 w-3.5 text-accent" />
+                    Практикующий юрист
                   </div>
-                  <div className="font-display text-xl font-bold">Александр Вячеславович</div>
-                  <div className="text-sm text-primary-foreground/80">Практикующий юрист</div>
+                </div>
+
+                <div className="p-5 sm:p-6 -mt-6 relative">
+                  <div className="text-[11px] uppercase tracking-[0.18em] text-accent font-semibold mb-1">
+                    Ведёт вебинар
+                  </div>
+                  <div className="font-display text-xl sm:text-2xl font-bold text-primary leading-tight">
+                    Александр Вячеславович
+                  </div>
+                  <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                    Консультирует по&nbsp;возможным вариантам в&nbsp;зависимости от&nbsp;ситуации —
+                    в&nbsp;рамках действующего законодательства РФ.
+                  </p>
+
+                  <Button onClick={scrollToForm} variant="hero" size="lg" className="w-full mt-5">
+                    Зарезервировать место
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+                  <p className="mt-3 text-[11px] text-muted-foreground flex items-center justify-center gap-1.5">
+                    <Lock className="h-3 w-3" />
+                    Бесплатно · без спама · отписка в&nbsp;один клик
+                  </p>
                 </div>
               </div>
             </div>
