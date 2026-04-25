@@ -186,10 +186,10 @@ const Index = () => {
       </section>
 
       {/* ============ 2. УЗНАВАНИЕ ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               Знакомая ситуация
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary text-balance">
@@ -197,7 +197,7 @@ const Index = () => {
             </h2>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-5xl mx-auto">
             {[
               { icon: CreditCard, text: "Есть кредиты или микрозаймы" },
               { icon: AlertTriangle, text: "Появились просрочки по платежам" },
