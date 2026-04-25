@@ -46,9 +46,9 @@ export const LeadMagnet = () => {
   };
 
   return (
-    <section className="py-20 lg:py-28 bg-surface">
+    <section className="py-12 lg:py-16 bg-surface">
       <div className="container mx-auto px-4">
-        <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-10 items-center">
+        <div className="max-w-6xl mx-auto grid lg:grid-cols-12 gap-8 items-center">
           {/* Left — visual & value */}
           <motion.div
             initial={{ opacity: 0, y: 24 }}
