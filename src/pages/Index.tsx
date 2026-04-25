@@ -350,45 +350,111 @@ const Index = () => {
       {/* ============ 6. СПИКЕР ============ */}
       <section className="py-20 lg:py-28 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-12 gap-10 items-center max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start max-w-6xl mx-auto">
             <motion.div {...fadeUp} className="lg:col-span-5">
-              <div className="relative max-w-sm mx-auto">
-                <div className="absolute -inset-3 bg-gradient-accent rounded-3xl opacity-15 blur-xl" />
-                <img
-                  src={speakerImg}
-                  alt="Александр Вячеславович — практикующий юрист"
-                  width={896}
-                  height={1152}
-                  loading="lazy"
-                  className="relative rounded-3xl shadow-card w-full h-auto"
-                />
+              <div className="relative max-w-sm mx-auto lg:mx-0">
+                <div className="absolute -inset-3 bg-gradient-accent rounded-3xl opacity-10 blur-xl" />
+                <div className="relative">
+                  <SpeakerSlider />
+                </div>
+                <p className="mt-4 text-center lg:text-left text-sm text-muted-foreground italic">
+                  Консультирует по&nbsp;возможным вариантам в&nbsp;зависимости от&nbsp;ситуации клиента.
+                </p>
               </div>
             </motion.div>
 
             <motion.div {...fadeUp} className="lg:col-span-7">
               <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
-                Спикер
+                Спикер вебинара
               </div>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-5 text-balance">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-3 text-balance">
                 Александр Вячеславович
               </h2>
-              <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
-                Практикующий юрист в&nbsp;сфере кредитных и&nbsp;долговых обязательств.
-                Работает с&nbsp;реальными ситуациями людей, оказавшихся под финансовым давлением.
+              <div className="text-base text-primary/70 font-medium mb-5">
+                Практикующий юрист · юридическая компания «Лояльность»
+              </div>
+
+              {/* Краткая биография */}
+              <p className="text-base sm:text-lg text-muted-foreground mb-4 leading-relaxed">
+                Александр специализируется на&nbsp;кредитных и&nbsp;долговых обязательствах. Работает
+                с&nbsp;ситуациями, в&nbsp;которых важно разобраться в&nbsp;деталях: кредиты, микрозаймы,
+                просрочки, общение с&nbsp;кредиторами и&nbsp;коллекторами.
+              </p>
+              <p className="text-base sm:text-lg text-muted-foreground mb-7 leading-relaxed">
+                Подход — без обещаний и&nbsp;давления: разбор ситуации, объяснение возможных
+                законных вариантов и&nbsp;их&nbsp;последствий. Окончательное решение всегда остаётся
+                за&nbsp;клиентом.
               </p>
 
-              <div className="grid sm:grid-cols-3 gap-4">
+              {/* Маркеры компетенций */}
+              <div className="space-y-3 mb-7">
                 {[
-                  { icon: Award, t: "10+ лет", d: "юридической практики" },
-                  { icon: Users, t: "сопровождает", d: "реальные дела клиентов" },
-                  { icon: Scale, t: "специализация", d: "долговые споры и защита" },
+                  {
+                    icon: Scale,
+                    t: "Кредитные и долговые споры",
+                    d: "Анализ договоров, оценка обоснованности требований, переговоры с кредиторами",
+                  },
+                  {
+                    icon: BookOpen,
+                    t: "Процедура банкротства физлиц",
+                    d: "Сопровождение по 127-ФЗ — от подготовки документов до завершения процедуры",
+                  },
+                  {
+                    icon: MessageSquare,
+                    t: "Защита от неправомерных действий",
+                    d: "Работа с обращениями коллекторов и МФО в рамках ФЗ № 230-ФЗ",
+                  },
                 ].map((s, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-surface border border-border">
-                    <s.icon className="h-5 w-5 text-accent mb-2" />
-                    <div className="font-display text-lg font-bold text-primary">{s.t}</div>
-                    <div className="text-xs text-muted-foreground">{s.d}</div>
+                  <div
+                    key={i}
+                    className="flex items-start gap-4 p-4 rounded-xl bg-surface border border-border"
+                  >
+                    <div className="h-10 w-10 shrink-0 rounded-lg bg-card border border-border flex items-center justify-center text-accent">
+                      <s.icon className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="font-display font-bold text-primary mb-0.5">{s.t}</div>
+                      <div className="text-sm text-muted-foreground leading-relaxed">{s.d}</div>
+                    </div>
                   </div>
                 ))}
+              </div>
+
+              {/* Релевантный опыт */}
+              <div className="grid sm:grid-cols-3 gap-3 mb-7">
+                {[
+                  { icon: Award, t: "Профильное", d: "юридическое образование" },
+                  { icon: Briefcase, t: "Многолетняя", d: "практика в долговой сфере" },
+                  { icon: Users, t: "Десятки", d: "сопровождённых дел клиентов" },
+                ].map((s, i) => (
+                  <div key={i} className="p-4 rounded-xl bg-card border border-border">
+                    <s.icon className="h-5 w-5 text-accent mb-2" />
+                    <div className="font-display text-base font-bold text-primary leading-tight">
+                      {s.t}
+                    </div>
+                    <div className="text-xs text-muted-foreground mt-0.5">{s.d}</div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Кейс-описание (нейтральный тон) */}
+              <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-card p-6 shadow-soft">
+                <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-3">
+                  <FileText className="h-4 w-4" />
+                  Пример из практики · в&nbsp;рамках закона
+                </div>
+                <p className="text-primary/85 leading-relaxed">
+                  К&nbsp;Александру обратился клиент с&nbsp;несколькими кредитами и&nbsp;микрозаймами,
+                  столкнувшийся с&nbsp;ежедневными звонками от&nbsp;взыскателей. Совместно были
+                  проанализированы договоры, оценена обоснованность требований и&nbsp;разобраны
+                  доступные законные варианты — от&nbsp;переговоров о&nbsp;реструктуризации
+                  до&nbsp;процедуры банкротства физлица. Клиент получил структурированную картину
+                  ситуации и&nbsp;самостоятельно выбрал подходящий ему путь.
+                </p>
+                <p className="mt-3 text-xs text-muted-foreground italic">
+                  Каждая ситуация индивидуальна. Описание носит ознакомительный характер
+                  и&nbsp;не&nbsp;является обещанием результата.
+                </p>
               </div>
             </motion.div>
           </div>
