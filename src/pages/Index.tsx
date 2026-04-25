@@ -151,7 +151,7 @@ const Index = () => {
                     height={1152}
                     className="absolute inset-0 h-full w-full object-cover object-top"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-transparent" />
+                  <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-background to-transparent" />
                   <div className="absolute top-4 left-4 inline-flex items-center gap-1.5 rounded-full bg-background/95 backdrop-blur px-3 py-1 text-xs font-semibold text-primary shadow-soft">
                     <BadgeCheck className="h-3.5 w-3.5 text-accent" />
                     Практикующий юрист
