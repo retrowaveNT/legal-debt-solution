@@ -305,10 +305,10 @@ const Index = () => {
       </section>
 
       {/* ============ 5. ПРОГРАММА ============ */}
-      <section className="py-20 lg:py-28 bg-surface">
+      <section className="py-12 lg:py-16 bg-surface">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               Программа вебинара
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary text-balance">
@@ -316,7 +316,7 @@ const Index = () => {
             </h2>
           </motion.div>
 
-          <div className="max-w-3xl mx-auto space-y-3">
+          <div className="max-w-3xl mx-auto space-y-2">
             {[
               { t: "Как устроена долговая система", d: "Откуда берётся снежный ком и почему просрочки растут быстрее, чем вы успеваете платить" },
               { t: "Какие существуют законные варианты", d: "Реструктуризация, рефинансирование, переговоры с кредиторами, судебная защита" },
