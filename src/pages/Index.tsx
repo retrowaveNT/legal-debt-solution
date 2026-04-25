@@ -490,6 +490,25 @@ const Index = () => {
                   </li>
                 ))}
               </ul>
+
+              {/* Микро-карточка спикера для усиления доверия */}
+              <div className="mt-8 pt-8 border-t border-border flex items-center gap-4">
+                <img
+                  src={speakerImg}
+                  alt="Александр Вячеславович"
+                  width={96}
+                  height={96}
+                  loading="lazy"
+                  className="h-14 w-14 rounded-full object-cover object-top border-2 border-accent/30 shrink-0"
+                />
+                <div className="text-sm leading-relaxed">
+                  <div className="font-display font-bold text-primary">Александр Вячеславович</div>
+                  <p className="text-muted-foreground">
+                    Разбирает ситуации индивидуально и&nbsp;объясняет возможные законные варианты
+                    простым языком — без давления и&nbsp;обещаний.
+                  </p>
+                </div>
+              </div>
             </div>
           </motion.div>
         </div>
