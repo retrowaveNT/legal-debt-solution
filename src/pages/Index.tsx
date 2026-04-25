@@ -518,18 +518,18 @@ const Index = () => {
       <LeadMagnet />
 
       {/* ============ 8 + 9. ФОРМА + ТАЙМЕР ============ */}
-      <section id="register" className="py-20 lg:py-28 bg-gradient-hero text-primary-foreground relative overflow-hidden">
+      <section id="register" className="py-14 lg:py-18 bg-gradient-hero text-primary-foreground relative overflow-hidden">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-accent/10 blur-3xl" />
 
         <div className="container mx-auto px-4 relative">
-          <motion.div {...fadeUp} className="text-center mb-12">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               До начала вебинара осталось
             </div>
             <Countdown target={WEBINAR_DATE} />
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
             <motion.div {...fadeUp}>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-balance mb-6">
                 Зарезервируйте место на&nbsp;вебинаре
