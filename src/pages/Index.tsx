@@ -563,19 +563,19 @@ const Index = () => {
       <FAQ />
 
       {/* ============ 10. ФИНАЛЬНЫЙ ДОЖИМ ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-14 lg:py-18 bg-background">
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary leading-tight text-balance mb-6">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary leading-tight text-balance mb-5">
               Чем&nbsp;раньше вы&nbsp;разберётесь — тем&nbsp;больше вариантов
               <span className="text-accent">&nbsp;решения</span>
             </h2>
-            <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
               Время — главный фактор в&nbsp;долговых ситуациях. Каждый месяц промедления сокращает
               список доступных законных инструментов.
             </p>
             <CTA />
-            <p className="mt-6 text-sm text-muted-foreground flex items-center justify-center gap-2">
+            <p className="mt-5 text-sm text-muted-foreground flex items-center justify-center gap-2">
               <Lock className="h-3.5 w-3.5" />
               Конфиденциально. Без спама. Без оплаты.
             </p>
