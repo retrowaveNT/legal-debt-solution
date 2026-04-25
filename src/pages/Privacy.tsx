@@ -83,12 +83,7 @@ const Privacy = () => {
       {/* Header */}
       <header className="bg-gradient-hero text-primary-foreground">
         <div className="container mx-auto px-4 py-6 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 font-display text-xl font-bold">
-            <div className="h-9 w-9 rounded-lg bg-accent flex items-center justify-center text-accent-foreground">
-              <Scale className="h-5 w-5" />
-            </div>
-            Lex&nbsp;Ratio
-          </Link>
+          <Logo variant="light" />
           <Link
             to="/"
             className="inline-flex items-center gap-2 text-sm text-primary-foreground/80 hover:text-primary-foreground transition-smooth"

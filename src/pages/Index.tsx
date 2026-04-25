@@ -19,6 +19,7 @@ import {
   Users,
   Video,
 } from "lucide-react";
+import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Countdown } from "@/components/landing/Countdown";
 import { RegistrationForm } from "@/components/landing/RegistrationForm";
@@ -71,12 +72,7 @@ const Index = () => {
         <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-primary-glow/40 blur-3xl" />
 
         <nav className="relative z-10 container mx-auto px-4 py-6 flex items-center justify-between">
-          <div className="flex items-center gap-2 font-display text-xl font-bold">
-            <div className="h-9 w-9 rounded-lg bg-accent flex items-center justify-center text-accent-foreground">
-              <Scale className="h-5 w-5" />
-            </div>
-            <span>Lex&nbsp;Ratio</span>
-          </div>
+          <Logo variant="light" />
           <div className="hidden md:flex items-center gap-2 text-sm text-primary-foreground/70">
             <Calendar className="h-4 w-4" />
             {WEBINAR_DATE_STR}, 19:00 МСК
@@ -160,7 +156,7 @@ const Index = () => {
                   <div className="text-xs uppercase tracking-wider text-accent font-semibold mb-1">
                     Спикер
                   </div>
-                  <div className="font-display text-xl font-bold">Алексей Морозов</div>
+                  <div className="font-display text-xl font-bold">Александр Вячеславович</div>
                   <div className="text-sm text-primary-foreground/80">Практикующий юрист</div>
                 </div>
               </div>
@@ -340,7 +336,7 @@ const Index = () => {
                 <div className="absolute -inset-3 bg-gradient-accent rounded-3xl opacity-15 blur-xl" />
                 <img
                   src={speakerImg}
-                  alt="Алексей Морозов — практикующий юрист"
+                  alt="Александр Вячеславович — практикующий юрист"
                   width={896}
                   height={1152}
                   loading="lazy"
@@ -354,7 +350,7 @@ const Index = () => {
                 Спикер
               </div>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-5 text-balance">
-                Алексей Морозов
+                Александр Вячеславович
               </h2>
               <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
                 Практикующий юрист в&nbsp;сфере кредитных и&nbsp;долговых обязательств.
@@ -485,9 +481,8 @@ const Index = () => {
       {/* ============ FOOTER ============ */}
       <footer className="py-10 bg-surface-deep text-primary-foreground/60 text-sm">
         <div className="container mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-2">
-            <Scale className="h-4 w-4" />
-            <span className="font-display font-bold text-primary-foreground">Lex Ratio</span>
+          <div className="flex items-center gap-3">
+            <Logo variant="light" asLink={false} />
             <span className="opacity-60">© {new Date().getFullYear()}</span>
           </div>
           <div className="flex flex-col sm:items-end gap-2">
