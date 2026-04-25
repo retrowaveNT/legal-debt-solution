@@ -77,7 +77,7 @@ const Index = () => {
         <div className="absolute -top-40 -right-40 h-[500px] w-[500px] rounded-full bg-accent/10 blur-3xl" />
         <div className="absolute -bottom-40 -left-20 h-[400px] w-[400px] rounded-full bg-primary-glow/40 blur-3xl" />
 
-        <nav className="relative z-10 container mx-auto px-4 py-6 flex items-center justify-between">
+        <nav className="relative z-10 container mx-auto px-4 py-4 flex items-center justify-between">
           <Logo variant="light" />
           <div className="hidden md:flex items-center gap-2 text-sm text-primary-foreground/70">
             <Calendar className="h-4 w-4" />
@@ -85,7 +85,7 @@ const Index = () => {
           </div>
         </nav>
 
-        <div className="relative z-10 container mx-auto px-4 pt-8 pb-20 lg:pt-16 lg:pb-32 grid lg:grid-cols-12 gap-12 items-center">
+        <div className="relative z-10 container mx-auto px-4 pt-6 pb-14 lg:pt-10 lg:pb-20 grid lg:grid-cols-12 gap-8 items-center">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -186,10 +186,10 @@ const Index = () => {
       </section>
 
       {/* ============ 2. УЗНАВАНИЕ ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               Знакомая ситуация
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary text-balance">
@@ -197,7 +197,7 @@ const Index = () => {
             </h2>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4 max-w-5xl mx-auto">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-5xl mx-auto">
             {[
               { icon: CreditCard, text: "Есть кредиты или микрозаймы" },
               { icon: AlertTriangle, text: "Появились просрочки по платежам" },
@@ -222,7 +222,7 @@ const Index = () => {
 
           <motion.p
             {...fadeUp}
-            className="text-center mt-12 text-xl sm:text-2xl font-display font-semibold text-primary/80"
+            className="text-center mt-8 text-xl sm:text-2xl font-display font-semibold text-primary/80"
           >
             Вы&nbsp;не один в&nbsp;этой ситуации.
           </motion.p>
@@ -230,7 +230,7 @@ const Index = () => {
       </section>
 
       {/* ============ 3. ИНСАЙТ ============ */}
-      <section className="py-20 lg:py-32 bg-gradient-hero text-primary-foreground relative overflow-hidden">
+      <section className="py-14 lg:py-20 bg-gradient-hero text-primary-foreground relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.04]" style={{
           backgroundImage: "radial-gradient(circle at 1px 1px, white 1px, transparent 0)",
           backgroundSize: "32px 32px",
@@ -253,10 +253,10 @@ const Index = () => {
       </section>
 
       {/* ============ 4. ЦЕННОСТЬ ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               Что вы получите
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary text-balance">
@@ -264,7 +264,7 @@ const Index = () => {
             </h2>
           </motion.div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto">
             {[
               {
                 icon: Target,
@@ -305,10 +305,10 @@ const Index = () => {
       </section>
 
       {/* ============ 5. ПРОГРАММА ============ */}
-      <section className="py-20 lg:py-28 bg-surface">
+      <section className="py-12 lg:py-16 bg-surface">
         <div className="container mx-auto px-4">
-          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-14">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center max-w-2xl mx-auto mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               Программа вебинара
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary text-balance">
@@ -316,7 +316,7 @@ const Index = () => {
             </h2>
           </motion.div>
 
-          <div className="max-w-3xl mx-auto space-y-3">
+          <div className="max-w-3xl mx-auto space-y-2">
             {[
               { t: "Как устроена долговая система", d: "Откуда берётся снежный ком и почему просрочки растут быстрее, чем вы успеваете платить" },
               { t: "Какие существуют законные варианты", d: "Реструктуризация, рефинансирование, переговоры с кредиторами, судебная защита" },
@@ -341,16 +341,16 @@ const Index = () => {
             ))}
           </div>
 
-          <motion.div {...fadeUp} className="text-center mt-12">
+          <motion.div {...fadeUp} className="text-center mt-8">
             <CTA />
           </motion.div>
         </div>
       </section>
 
       {/* ============ 6. СПИКЕР ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start max-w-6xl mx-auto">
             <motion.div {...fadeUp} className="lg:col-span-5 lg:sticky lg:top-8 self-start">
               <div className="relative max-w-sm mx-auto lg:mx-0">
                 <div className="absolute -inset-3 bg-gradient-accent rounded-3xl opacity-10 blur-xl" />
@@ -462,10 +462,10 @@ const Index = () => {
       </section>
 
       {/* ============ 7. ЮРИДИЧЕСКАЯ ЧЕСТНОСТЬ ============ */}
-      <section className="py-20 lg:py-24 bg-surface">
+      <section className="py-12 lg:py-16 bg-surface">
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="max-w-4xl mx-auto">
-            <div className="rounded-3xl bg-card border border-border p-8 sm:p-12 shadow-soft">
+            <div className="rounded-3xl bg-card border border-border p-6 sm:p-8 shadow-soft">
               <div className="flex items-center gap-3 mb-6">
                 <div className="h-12 w-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center">
                   <Scale className="h-6 w-6" />
@@ -518,18 +518,18 @@ const Index = () => {
       <LeadMagnet />
 
       {/* ============ 8 + 9. ФОРМА + ТАЙМЕР ============ */}
-      <section id="register" className="py-20 lg:py-28 bg-gradient-hero text-primary-foreground relative overflow-hidden">
+      <section id="register" className="py-14 lg:py-18 bg-gradient-hero text-primary-foreground relative overflow-hidden">
         <div className="absolute -top-32 left-1/2 -translate-x-1/2 h-[600px] w-[600px] rounded-full bg-accent/10 blur-3xl" />
 
         <div className="container mx-auto px-4 relative">
-          <motion.div {...fadeUp} className="text-center mb-12">
-            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
+          <motion.div {...fadeUp} className="text-center mb-8">
+            <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-3">
               До начала вебинара осталось
             </div>
             <Countdown target={WEBINAR_DATE} />
           </motion.div>
 
-          <div className="grid lg:grid-cols-2 gap-12 items-center max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-8 items-center max-w-5xl mx-auto">
             <motion.div {...fadeUp}>
               <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-balance mb-6">
                 Зарезервируйте место на&nbsp;вебинаре
@@ -563,19 +563,19 @@ const Index = () => {
       <FAQ />
 
       {/* ============ 10. ФИНАЛЬНЫЙ ДОЖИМ ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-14 lg:py-18 bg-background">
         <div className="container mx-auto px-4">
           <motion.div {...fadeUp} className="max-w-3xl mx-auto text-center">
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary leading-tight text-balance mb-6">
+            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary leading-tight text-balance mb-5">
               Чем&nbsp;раньше вы&nbsp;разберётесь — тем&nbsp;больше вариантов
               <span className="text-accent">&nbsp;решения</span>
             </h2>
-            <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
+            <p className="text-lg text-muted-foreground mb-8 leading-relaxed">
               Время — главный фактор в&nbsp;долговых ситуациях. Каждый месяц промедления сокращает
               список доступных законных инструментов.
             </p>
             <CTA />
-            <p className="mt-6 text-sm text-muted-foreground flex items-center justify-center gap-2">
+            <p className="mt-5 text-sm text-muted-foreground flex items-center justify-center gap-2">
               <Lock className="h-3.5 w-3.5" />
               Конфиденциально. Без спама. Без оплаты.
             </p>

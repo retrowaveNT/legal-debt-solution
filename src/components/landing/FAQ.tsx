@@ -48,14 +48,14 @@ const items = [
 
 export const FAQ = () => {
   return (
-    <section className="py-20 lg:py-28 bg-background">
+    <section className="py-12 lg:py-16 bg-background">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="text-center max-w-2xl mx-auto mb-12"
+          className="text-center max-w-2xl mx-auto mb-8"
         >
           <div className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
             <HelpCircle className="h-4 w-4" />
@@ -67,7 +67,7 @@ export const FAQ = () => {
         </motion.div>
 
         <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-2">
             {items.map((item, i) => (
               <AccordionItem
                 key={i}
