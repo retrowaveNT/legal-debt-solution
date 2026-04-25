@@ -341,16 +341,16 @@ const Index = () => {
             ))}
           </div>
 
-          <motion.div {...fadeUp} className="text-center mt-12">
+          <motion.div {...fadeUp} className="text-center mt-8">
             <CTA />
           </motion.div>
         </div>
       </section>
 
       {/* ============ 6. СПИКЕР ============ */}
-      <section className="py-20 lg:py-28 bg-background">
+      <section className="py-12 lg:py-16 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-12 gap-10 lg:gap-14 items-start max-w-6xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start max-w-6xl mx-auto">
             <motion.div {...fadeUp} className="lg:col-span-5 lg:sticky lg:top-8 self-start">
               <div className="relative max-w-sm mx-auto lg:mx-0">
                 <div className="absolute -inset-3 bg-gradient-accent rounded-3xl opacity-10 blur-xl" />
