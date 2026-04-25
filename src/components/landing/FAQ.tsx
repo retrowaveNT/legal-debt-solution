@@ -67,7 +67,7 @@ export const FAQ = () => {
         </motion.div>
 
         <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-3">
+          <Accordion type="single" collapsible className="space-y-2">
             {items.map((item, i) => (
               <AccordionItem
                 key={i}
