@@ -34,18 +34,13 @@ import { SpeakerSlider } from "@/components/landing/SpeakerSlider";
 import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
-// Webinar date — ближайшая среда, 19:00
-const getWebinarDate = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + ((3 - d.getDay() + 7) % 7 || 7));
-  d.setHours(19, 0, 0, 0);
-  return d;
-};
-const WEBINAR_DATE = getWebinarDate();
+// Дата вебинара: 15 мая 2026, 17:00 МСК
+const WEBINAR_DATE = new Date("2026-05-15T17:00:00+03:00");
 const WEBINAR_DATE_STR = WEBINAR_DATE.toLocaleDateString("ru-RU", {
   day: "numeric",
   month: "long",
 });
+const WEBINAR_TIME_STR = "17:00 МСК";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
