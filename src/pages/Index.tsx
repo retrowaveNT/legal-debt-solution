@@ -31,21 +31,17 @@ import { RegistrationForm } from "@/components/landing/RegistrationForm";
 import { LeadMagnet } from "@/components/landing/LeadMagnet";
 import { FAQ } from "@/components/landing/FAQ";
 import { SpeakerSlider } from "@/components/landing/SpeakerSlider";
+import { WebinarPopup } from "@/components/landing/WebinarPopup";
 import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
-// Webinar date — ближайшая среда, 19:00
-const getWebinarDate = () => {
-  const d = new Date();
-  d.setDate(d.getDate() + ((3 - d.getDay() + 7) % 7 || 7));
-  d.setHours(19, 0, 0, 0);
-  return d;
-};
-const WEBINAR_DATE = getWebinarDate();
+// Дата вебинара: 15 мая 2026, 17:00 МСК
+const WEBINAR_DATE = new Date("2026-05-15T17:00:00+03:00");
 const WEBINAR_DATE_STR = WEBINAR_DATE.toLocaleDateString("ru-RU", {
   day: "numeric",
   month: "long",
 });
+const WEBINAR_TIME_STR = "17:00 МСК";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -71,6 +67,11 @@ const CTA = ({
 const Index = () => {
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <WebinarPopup
+        delayMs={40000}
+        webinarDateStr={WEBINAR_DATE_STR}
+        webinarTimeStr={WEBINAR_TIME_STR}
+      />
       {/* ============ HERO ============ */}
       <section className="relative bg-gradient-hero text-primary-foreground overflow-hidden">
         {/* decorative blobs */}
@@ -81,7 +82,7 @@ const Index = () => {
           <Logo variant="light" />
           <div className="hidden md:flex items-center gap-2 text-sm text-primary-foreground/70">
             <Calendar className="h-4 w-4" />
-            {WEBINAR_DATE_STR}, 19:00 МСК
+            {WEBINAR_DATE_STR}, 17:00 МСК
           </div>
         </nav>
 
@@ -111,7 +112,7 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-4 mb-10 text-sm">
               <div className="flex items-center gap-2 text-primary-foreground/85">
                 <Calendar className="h-4 w-4 text-accent" />
-                {WEBINAR_DATE_STR}, 19:00 МСК
+                {WEBINAR_DATE_STR}, 17:00 МСК
               </div>
               <div className="hidden sm:block h-1 w-1 rounded-full bg-primary-foreground/30" />
               <div className="flex items-center gap-2 text-primary-foreground/85">
