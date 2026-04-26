@@ -76,7 +76,7 @@ const Index = () => {
           <Logo variant="light" />
           <div className="hidden md:flex items-center gap-2 text-sm text-primary-foreground/70">
             <Calendar className="h-4 w-4" />
-            {WEBINAR_DATE_STR}, 19:00 МСК
+            {WEBINAR_DATE_STR}, 17:00 МСК
           </div>
         </nav>
 
@@ -106,7 +106,7 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-4 mb-10 text-sm">
               <div className="flex items-center gap-2 text-primary-foreground/85">
                 <Calendar className="h-4 w-4 text-accent" />
-                {WEBINAR_DATE_STR}, 19:00 МСК
+                {WEBINAR_DATE_STR}, 17:00 МСК
               </div>
               <div className="hidden sm:block h-1 w-1 rounded-full bg-primary-foreground/30" />
               <div className="flex items-center gap-2 text-primary-foreground/85">
