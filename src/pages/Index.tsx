@@ -31,6 +31,7 @@ import { RegistrationForm } from "@/components/landing/RegistrationForm";
 import { LeadMagnet } from "@/components/landing/LeadMagnet";
 import { FAQ } from "@/components/landing/FAQ";
 import { SpeakerSlider } from "@/components/landing/SpeakerSlider";
+import { WebinarPopup } from "@/components/landing/WebinarPopup";
 import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
@@ -66,6 +67,11 @@ const CTA = ({
 const Index = () => {
   return (
     <main className="min-h-screen bg-background text-foreground overflow-x-hidden">
+      <WebinarPopup
+        delayMs={40000}
+        webinarDateStr={WEBINAR_DATE_STR}
+        webinarTimeStr={WEBINAR_TIME_STR}
+      />
       {/* ============ HERO ============ */}
       <section className="relative bg-gradient-hero text-primary-foreground overflow-hidden">
         {/* decorative blobs */}
