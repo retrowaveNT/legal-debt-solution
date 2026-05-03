@@ -28,6 +28,8 @@ npm run start
 - `EMAIL_PORT`
 - `EMAIL_USER`
 - `EMAIL_PASS`
+- `EMAIL_SECURE` — `true` для SSL (обычно порт `465`), `false` для STARTTLS (`587`)
+- `EMAIL_REQUIRE_TLS` — `true` для принудительного STARTTLS (обычно при `587`)
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - `APP_URL` — URL фронтенда

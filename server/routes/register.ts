@@ -9,6 +9,11 @@ interface RegisterBody {
 
 const router = Router();
 
+const toBool = (value: string | undefined, fallback: boolean) => {
+  if (!value) return fallback;
+  return ["1", "true", "yes", "on"].includes(value.toLowerCase());
+};
+
 const requireEnv = (key: string): string => {
   const value = process.env[key];
   if (!value) {
@@ -59,10 +64,13 @@ router.post("/register", async (req, res) => {
       try {
         const emailUser = requireEnv("EMAIL_USER");
         const emailPort = Number(requireEnv("EMAIL_PORT"));
+        const emailSecure = toBool(process.env.EMAIL_SECURE, emailPort === 465);
+        const emailRequireTls = toBool(process.env.EMAIL_REQUIRE_TLS, emailPort === 587);
         const transporter = nodemailer.createTransport({
           host: requireEnv("EMAIL_HOST"),
           port: emailPort,
-          secure: emailPort === 465,
+          secure: emailSecure,
+          requireTLS: emailRequireTls,
           auth: {
             user: emailUser,
             pass: requireEnv("EMAIL_PASS"),
@@ -71,6 +79,8 @@ router.post("/register", async (req, res) => {
           greetingTimeout: 10_000,
           socketTimeout: 15_000,
         });
+
+        await transporter.verify();
 
         await transporter.sendMail({
           from: `Регистрация <${emailUser}>`,
@@ -92,8 +102,13 @@ router.post("/register", async (req, res) => {
           `,
         });
       } catch (emailError) {
-        console.error("Confirmation email error", emailError);
-
+        console.error("Confirmation email error", {
+          host: process.env.EMAIL_HOST,
+          port: process.env.EMAIL_PORT,
+          secure: process.env.EMAIL_SECURE,
+          requireTLS: process.env.EMAIL_REQUIRE_TLS,
+          error: emailError,
+        });
       }
     }
 
