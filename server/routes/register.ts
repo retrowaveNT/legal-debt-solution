@@ -79,6 +79,33 @@ const createTransporter = () => {
 };
 
 const sendEmail = async ({ to, subject, html }: { to: string; subject: string; html: string }) => {
+  const resendApiKey = process.env.RESEND_API_KEY;
+  const resendFrom = process.env.RESEND_FROM_EMAIL;
+
+  if (resendApiKey && resendFrom) {
+    const response = await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resendApiKey}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: resendFrom,
+        to: [to],
+        subject,
+        html,
+      }),
+      signal: AbortSignal.timeout(20_000),
+    });
+
+    if (!response.ok) {
+      const body = await response.text();
+      throw new Error(`Resend API error ${response.status}: ${body}`);
+    }
+
+    return;
+  }
+
   const { emailUser, transporter } = createTransporter();
   await transporter.verify();
   await transporter.sendMail({ from: `ЮК Лояльность <${emailUser}>`, to, subject, html });

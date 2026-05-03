@@ -30,6 +30,8 @@ npm run start
 - `EMAIL_PASS`
 - `EMAIL_SECURE` — `true` для SSL (обычно порт `465`), `false` для STARTTLS (`587`)
 - `EMAIL_REQUIRE_TLS` — `true` для принудительного STARTTLS (обычно при `587`)
+- `RESEND_API_KEY` (опционально, если отправляете письма через HTTPS API Resend вместо SMTP)
+- `RESEND_FROM_EMAIL` (опционально, подтвержденный отправитель в Resend)
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - `APP_URL` — URL фронтенда
