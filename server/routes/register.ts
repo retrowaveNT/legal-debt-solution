@@ -82,30 +82,41 @@ router.post("/register", async (req, res) => {
     const botToken = requireEnv("TELEGRAM_BOT_TOKEN");
     const chatId = requireEnv("TELEGRAM_CHAT_ID");
     const appUrl = process.env.APP_URL ?? "http://localhost:5173";
+    const telegramApiBase = process.env.TELEGRAM_API_BASE ?? "https://api.telegram.org";
 
-    await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: [
-          "Новая заявка с формы регистрации",
-          `Имя: ${name}`,
-          `Email: ${email}`,
-          `Телефон: ${phone}`,
-        ].join("\n"),
-        reply_markup: {
-          inline_keyboard: [
-            [
-              {
-                text: "Посмотреть заявку",
-                url: appUrl,
-              },
+    try {
+      const telegramResponse = await fetch(`${telegramApiBase}/bot${botToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: [
+            "Новая заявка с формы регистрации",
+            `Имя: ${name}`,
+            `Email: ${email}`,
+            `Телефон: ${phone}`,
+          ].join("\n"),
+          reply_markup: {
+            inline_keyboard: [
+              [
+                {
+                  text: "Посмотреть заявку",
+                  url: appUrl,
+                },
+              ],
             ],
-          ],
-        },
-      }),
-    });
+          },
+        }),
+        signal: AbortSignal.timeout(20_000),
+      });
+
+      if (!telegramResponse.ok) {
+        const telegramBody = await telegramResponse.text();
+        console.error("Telegram API returned non-OK response", telegramResponse.status, telegramBody);
+      }
+    } catch (telegramError) {
+      console.error("Telegram notification error", telegramError);
+    }
 
     return res.json({ success: true });
   } catch (error) {
