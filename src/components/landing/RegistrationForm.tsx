@@ -29,6 +29,8 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+
 export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => {
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -42,7 +44,9 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
     setSubmitError(null);
 
     try {
-      const response = await fetch("/api/register", {
+      const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/register` : "/api/register";
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -50,9 +54,16 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
         body: JSON.stringify(values),
       });
 
-      const data = (await response.json()) as { success?: boolean };
+      const rawBody = await response.text();
+      let data: { success?: boolean } | undefined;
 
-      if (!response.ok || !data.success) {
+      try {
+        data = rawBody ? (JSON.parse(rawBody) as { success?: boolean }) : undefined;
+      } catch (parseError) {
+        console.error("Registration response parse error", parseError, rawBody);
+      }
+
+      if (!response.ok || !data?.success) {
         throw new Error("Registration request failed");
       }
 

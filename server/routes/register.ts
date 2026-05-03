@@ -9,6 +9,11 @@ interface RegisterBody {
 
 const router = Router();
 
+const toBool = (value: string | undefined, fallback: boolean) => {
+  if (!value) return fallback;
+  return ["1", "true", "yes", "on"].includes(value.toLowerCase());
+};
+
 const requireEnv = (key: string): string => {
   const value = process.env[key];
   if (!value) {
@@ -47,37 +52,65 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ success: false });
     }
 
-    const transporter = nodemailer.createTransport({
-      host: requireEnv("EMAIL_HOST"),
-      port: Number(requireEnv("EMAIL_PORT")),
-      secure: Number(requireEnv("EMAIL_PORT")) === 465,
-      auth: {
-        user: requireEnv("EMAIL_USER"),
-        pass: requireEnv("EMAIL_PASS"),
-      },
-    });
-
     const calendarLink = buildCalendarLink({ name });
 
-    await transporter.sendMail({
-      from: `Регистрация <${requireEnv("EMAIL_USER")}>`,
-      to: email,
-      subject: "Вы зарегистрированы на вебинар",
-      html: `
-        <div style="font-family:Arial,sans-serif;line-height:1.5;color:#1f2937;">
-          <h2 style="margin:0 0 12px;">Здравствуйте, ${escapeHtml(name)}!</h2>
-          <p style="margin:0 0 16px;">Спасибо за регистрацию. Нажмите кнопку ниже, чтобы добавить вебинар в календарь.</p>
-          <a
-            href="${calendarLink}"
-            style="display:inline-block;padding:12px 18px;border-radius:8px;background:#2563eb;color:#ffffff;text-decoration:none;font-weight:700;"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Добавить в календарь
-          </a>
-        </div>
-      `,
-    });
+    const emailEnvPresent = Boolean(
+      process.env.EMAIL_HOST && process.env.EMAIL_PORT && process.env.EMAIL_USER && process.env.EMAIL_PASS,
+    );
+
+    if (!emailEnvPresent) {
+      console.warn("EMAIL_* variables are missing, skipping confirmation email");
+    } else {
+      try {
+        const emailUser = requireEnv("EMAIL_USER");
+        const emailPort = Number(requireEnv("EMAIL_PORT"));
+        const emailSecure = toBool(process.env.EMAIL_SECURE, emailPort === 465);
+        const emailRequireTls = toBool(process.env.EMAIL_REQUIRE_TLS, emailPort === 587);
+        const transporter = nodemailer.createTransport({
+          host: requireEnv("EMAIL_HOST"),
+          port: emailPort,
+          secure: emailSecure,
+          requireTLS: emailRequireTls,
+          auth: {
+            user: emailUser,
+            pass: requireEnv("EMAIL_PASS"),
+          },
+          connectionTimeout: 10_000,
+          greetingTimeout: 10_000,
+          socketTimeout: 15_000,
+        });
+
+        await transporter.verify();
+
+        await transporter.sendMail({
+          from: `Регистрация <${emailUser}>`,
+          to: email,
+          subject: "Вы зарегистрированы на вебинар",
+          html: `
+            <div style="font-family:Arial,sans-serif;line-height:1.5;color:#1f2937;">
+              <h2 style="margin:0 0 12px;">Здравствуйте, ${escapeHtml(name)}!</h2>
+              <p style="margin:0 0 16px;">Спасибо за регистрацию. Нажмите кнопку ниже, чтобы добавить вебинар в календарь.</p>
+              <a
+                href="${calendarLink}"
+                style="display:inline-block;padding:12px 18px;border-radius:8px;background:#2563eb;color:#ffffff;text-decoration:none;font-weight:700;"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Добавить в календарь
+              </a>
+            </div>
+          `,
+        });
+      } catch (emailError) {
+        console.error("Confirmation email error", {
+          host: process.env.EMAIL_HOST,
+          port: process.env.EMAIL_PORT,
+          secure: process.env.EMAIL_SECURE,
+          requireTLS: process.env.EMAIL_REQUIRE_TLS,
+          error: emailError,
+        });
+      }
+    }
 
     const botToken = requireEnv("TELEGRAM_BOT_TOKEN");
     const chatId = requireEnv("TELEGRAM_CHAT_ID");
