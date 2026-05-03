@@ -84,6 +84,24 @@ const sendEmail = async ({ to, subject, html }: { to: string; subject: string; h
   await transporter.sendMail({ from: `ЮК Лояльность <${emailUser}>`, to, subject, html });
 };
 
+const sendTelegramNotification = async (text: string) => {
+  const botToken = requireEnv("TELEGRAM_BOT_TOKEN");
+  const chatId = requireEnv("TELEGRAM_CHAT_ID");
+  const telegramApiBase = process.env.TELEGRAM_API_BASE ?? "https://api.telegram.org";
+
+  const telegramResponse = await fetch(`${telegramApiBase}/bot${botToken}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ chat_id: chatId, text }),
+    signal: AbortSignal.timeout(20_000),
+  });
+
+  if (!telegramResponse.ok) {
+    const telegramBody = await telegramResponse.text();
+    console.error("Telegram API returned non-OK response", telegramResponse.status, telegramBody);
+  }
+};
+
 const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: string }) => `
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
@@ -146,46 +164,33 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ success: false });
     }
 
-    try {
-      const calendarLink = buildYandexCalendarLink({ name });
-      await sendEmail({
-        to: email,
-        subject: "Вы зарегистрированы на вебинар — ЮК Лояльность",
-        html: webinarEmailHtml({ name, calendarLink }),
-      });
-    } catch (emailError) {
-      console.error("Confirmation email error", emailError);
-    }
+    res.json({ success: true });
 
-    const botToken = requireEnv("TELEGRAM_BOT_TOKEN");
-    const chatId = requireEnv("TELEGRAM_CHAT_ID");
-    const telegramApiBase = process.env.TELEGRAM_API_BASE ?? "https://api.telegram.org";
-
-    try {
-      const telegramResponse = await fetch(`${telegramApiBase}/bot${botToken}/sendMessage`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          chat_id: chatId,
-          text: [
-            "Новая заявка на вебинар",
-            `Имя: ${name}`,
-            `Email: ${email}`,
-            `Телефон: ${phone}`,
-          ].join("\n"),
-        }),
-        signal: AbortSignal.timeout(20_000),
-      });
-
-      if (!telegramResponse.ok) {
-        const telegramBody = await telegramResponse.text();
-        console.error("Telegram API returned non-OK response", telegramResponse.status, telegramBody);
+    void (async () => {
+      try {
+        const calendarLink = buildYandexCalendarLink({ name });
+        await sendEmail({
+          to: email,
+          subject: "Вы зарегистрированы на вебинар — ЮК Лояльность",
+          html: webinarEmailHtml({ name, calendarLink }),
+        });
+      } catch (emailError) {
+        console.error("Confirmation email error", emailError);
       }
-    } catch (telegramError) {
-      console.error("Telegram notification error", telegramError);
-    }
 
-    return res.json({ success: true });
+      try {
+        await sendTelegramNotification([
+          "Новая заявка на вебинар",
+          `Имя: ${name}`,
+          `Email: ${email}`,
+          `Телефон: ${phone}`,
+        ].join("\n"));
+      } catch (telegramError) {
+        console.error("Telegram notification error", telegramError);
+      }
+    })();
+
+    return;
   } catch (error) {
     console.error("Register route error", error);
     return res.status(500).json({ success: false });
@@ -200,31 +205,27 @@ router.post("/lead-magnet", async (req, res) => {
       return res.status(400).json({ success: false });
     }
 
-    try {
-      await sendEmail({
-        to: email,
-        subject: "Ваш PDF-гайд — ЮК Лояльность",
-        html: leadMagnetEmailHtml({ name }),
-      });
-    } catch (emailError) {
-      console.error("Lead magnet email error", emailError);
-    }
+    res.json({ success: true });
 
-    const botToken = requireEnv("TELEGRAM_BOT_TOKEN");
-    const chatId = requireEnv("TELEGRAM_CHAT_ID");
-    const telegramApiBase = process.env.TELEGRAM_API_BASE ?? "https://api.telegram.org";
+    void (async () => {
+      try {
+        await sendEmail({
+          to: email,
+          subject: "Ваш PDF-гайд — ЮК Лояльность",
+          html: leadMagnetEmailHtml({ name }),
+        });
+      } catch (emailError) {
+        console.error("Lead magnet email error", emailError);
+      }
 
-    await fetch(`${telegramApiBase}/bot${botToken}/sendMessage`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: ["Новая заявка на PDF-гайд", `Имя: ${name}`, `Email: ${email}`].join("\n"),
-      }),
-      signal: AbortSignal.timeout(20_000),
-    }).catch((telegramError) => console.error("Telegram lead-magnet notification error", telegramError));
+      try {
+        await sendTelegramNotification(["Новая заявка на PDF-гайд", `Имя: ${name}`, `Email: ${email}`].join("\n"));
+      } catch (telegramError) {
+        console.error("Telegram lead-magnet notification error", telegramError);
+      }
+    })();
 
-    return res.json({ success: true });
+    return;
   } catch (error) {
     console.error("Lead magnet route error", error);
     return res.status(500).json({ success: false });
