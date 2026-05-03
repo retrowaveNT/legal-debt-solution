@@ -34,6 +34,8 @@ npm run start
 - `TELEGRAM_CHAT_ID`
 - `APP_URL` — URL фронтенда
 - `TELEGRAM_API_BASE` (опционально, по умолчанию `https://api.telegram.org`)
+- `ORG_PHONE` (опционально, для подписи в письмах)
+- `ORG_EMAIL` (опционально, для подписи в письмах)
 
 ### 2) Frontend (Static Site)
 
@@ -46,3 +48,8 @@ npm run start
 ### 3) Локальная разработка
 
 Если `VITE_API_BASE_URL` не задан, фронт использует относительный путь `/api/register` (через Vite proxy в режиме `npm run dev`).
+
+
+API routes:
+- `POST /api/register` — регистрация на вебинар
+- `POST /api/lead-magnet` — отправка PDF-гида
