@@ -6,6 +6,10 @@ const app = express();
 const port = Number(process.env.PORT ?? 3001);
 
 app.use(express.json());
+app.use((req, _res, next) => {
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+  next();
+});
 app.use("/api", registerRouter);
 
 app.get("/health", (_req, res) => {
