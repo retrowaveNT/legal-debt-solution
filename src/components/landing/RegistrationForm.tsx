@@ -31,15 +31,36 @@ type FormValues = z.infer<typeof schema>;
 
 export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => {
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (_values: FormValues) => {
-    await new Promise((r) => setTimeout(r, 600));
-    setDone(true);
+  const onSubmit = async (values: FormValues) => {
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = (await response.json()) as { success?: boolean };
+
+      if (!response.ok || !data.success) {
+        throw new Error("Registration request failed");
+      }
+
+      setDone(true);
+    } catch (error) {
+      console.error("Registration submit error", error);
+      setSubmitError("Не удалось отправить заявку. Попробуйте ещё раз.");
+    }
   };
 
   if (done) {
@@ -114,6 +135,7 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
         >
           {isSubmitting ? "Отправляем..." : "Принять участие"}
         </Button>
+        {submitError && <p className="text-xs text-destructive mt-2">{submitError}</p>}
 
         <div className="space-y-2 pt-2">
           <div className="flex items-start gap-2">
