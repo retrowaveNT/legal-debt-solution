@@ -29,7 +29,7 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\\/$/, "");
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
 
 export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => {
   const [done, setDone] = useState(false);
