@@ -28,19 +28,21 @@ const requireEnv = (key: string): string => {
 };
 
 const ORG_NAME = 'ЮК "Лояльность"';
-const ORG_PHONE = process.env.ORG_PHONE ?? "+7 (800) 000-00-00";
-const ORG_EMAIL = process.env.ORG_EMAIL ?? "info@loyalnost.ru";
-const ORG_SITE = process.env.APP_URL ?? "https://legal-debt-solution.onrender.com";
+const ORG_PHONE = process.env.ORG_PHONE ?? "+79676399556";
+const ORG_EMAIL = process.env.ORG_EMAIL ?? "lawyer@лояльность.com";
+const ORG_SITE = process.env.ORG_SITE ?? "https://лояльность.com";
+const ORG_ADDRESS = process.env.ORG_ADDRESS ?? "г. Екатеринбург, ул. Кузнечная 92/2, офис 617";
+const ORG_LOGO_URL = process.env.ORG_LOGO_URL ?? "https://legal-debt-solution.onrender.com/assets/logo-C6wkK0x0.png";
+const ORG_SPEAKER_IMAGE_URL = process.env.ORG_SPEAKER_IMAGE_URL ?? "https://legal-debt-solution.onrender.com/assets/speaker-oa9mlwt4.jpg";
 
 const buildYandexCalendarLink = ({ name }: { name: string }) => {
-  const start = "2026-05-15T17:00:00+03:00";
-  const end = "2026-05-15T18:00:00+03:00";
   const params = new URLSearchParams({
     name: "Вебинар: 3 законных способа решить проблему с долгами",
     description: `Здравствуйте, ${name}!\n\nВы зарегистрированы на вебинар ЮК «Лояльность».`,
     location: "Онлайн",
-    start,
-    end,
+    start: "20260515T170000",
+    end: "20260515T180000",
+    tz_id: "Europe/Moscow",
   });
 
   return `https://calendar.yandex.ru/event?${params.toString()}`;
@@ -132,6 +134,10 @@ const sendTelegramNotification = async (text: string) => {
 const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: string }) => `
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
+      <div style="padding:18px 24px;background:#ffffff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;">
+        <img src="${ORG_LOGO_URL}" alt="Логотип ЮК Лояльность" style="height:42px;width:auto;display:block;"/>
+        <div style="font-size:13px;color:#334155;">Юридическая компания «Лояльность»</div>
+      </div>
       <div style="background:linear-gradient(135deg,#0f172a,#1e3a8a);padding:28px;color:#fff;">
         <div style="font-size:12px;letter-spacing:.12em;text-transform:uppercase;opacity:.85;">${ORG_NAME}</div>
         <h1 style="margin:10px 0 0;font-size:24px;line-height:1.3;">Вы зарегистрированы на вебинар</h1>
@@ -139,6 +145,7 @@ const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: 
       <div style="padding:24px;line-height:1.65;">
         <p style="margin:0 0 10px;">Здравствуйте, <strong>${escapeHtml(name)}</strong>!</p>
         <p style="margin:0 0 14px;">Спасибо за регистрацию на вебинар <strong>«3 законных способа решить проблему с долгами»</strong>.</p>
+        <img src="${ORG_SPEAKER_IMAGE_URL}" alt="Спикер ЮК Лояльность" style="width:100%;max-width:592px;height:auto;border-radius:12px;margin:0 0 16px;display:block;"/>
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin:0 0 18px;">
           <div><strong>Дата:</strong> 15 мая 2026</div>
           <div><strong>Время:</strong> 17:00 МСК</div>
@@ -155,7 +162,8 @@ const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: 
           <strong>${ORG_NAME}</strong><br/>
           Телефон: <a href="tel:${ORG_PHONE}" style="color:#1d4ed8;text-decoration:none;">${ORG_PHONE}</a><br/>
           Email: <a href="mailto:${ORG_EMAIL}" style="color:#1d4ed8;text-decoration:none;">${ORG_EMAIL}</a><br/>
-          Сайт: <a href="${ORG_SITE}" style="color:#1d4ed8;text-decoration:none;">${ORG_SITE}</a>
+          Сайт: <a href="${ORG_SITE}" style="color:#1d4ed8;text-decoration:none;">${ORG_SITE}</a><br/>
+          Адрес: ${ORG_ADDRESS}
         </div>
       </div>
     </div>
@@ -177,7 +185,8 @@ const leadMagnetEmailHtml = ({ name }: { name: string }) => `
           <strong>${ORG_NAME}</strong><br/>
           Телефон: <a href="tel:${ORG_PHONE}" style="color:#1d4ed8;text-decoration:none;">${ORG_PHONE}</a><br/>
           Email: <a href="mailto:${ORG_EMAIL}" style="color:#1d4ed8;text-decoration:none;">${ORG_EMAIL}</a><br/>
-          Сайт: <a href="${ORG_SITE}" style="color:#1d4ed8;text-decoration:none;">${ORG_SITE}</a>
+          Сайт: <a href="${ORG_SITE}" style="color:#1d4ed8;text-decoration:none;">${ORG_SITE}</a><br/>
+          Адрес: ${ORG_ADDRESS}
         </div>
       </div>
     </div>
