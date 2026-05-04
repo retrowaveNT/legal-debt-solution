@@ -25,16 +25,32 @@ const features = [
   "Список документов, которые стоит подготовить",
 ];
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
+
 export const LeadMagnet = () => {
   const [done, setDone] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
   } = useForm<Values>({ resolver: zodResolver(schema) });
 
-  const onSubmit = async (_v: Values) => {
-    await new Promise((r) => setTimeout(r, 500));
+  const onSubmit = async (values: Values) => {
+    setSubmitError(null);
+    const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/lead-magnet` : "/api/lead-magnet";
+
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(values),
+    });
+
+    if (!response.ok) {
+      setSubmitError("Не удалось отправить заявку. Попробуйте ещё раз.");
+      return;
+    }
+
     setDone(true);
     // Trigger download
     const a = document.createElement("a");
@@ -177,6 +193,7 @@ export const LeadMagnet = () => {
                     <Download className="h-5 w-5" />
                     {isSubmitting ? "Готовим файл..." : "Получить PDF"}
                   </Button>
+                  {submitError && <p className="text-xs text-destructive mt-2">{submitError}</p>}
 
                   <div className="space-y-2 pt-1">
                     <div className="flex items-start gap-2">
