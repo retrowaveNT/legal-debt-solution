@@ -16,6 +16,7 @@ const schema = z.object({
 type Values = z.infer<typeof schema>;
 
 const PDF_URL = "/downloads/guide-debt-solutions.pdf";
+const PDF_FILE_NAME = "Первые 7 шагов для решения проблем с долгами.pdf";
 
 const features = [
   "Обзор 5 законных вариантов решения долгов",
@@ -55,7 +56,7 @@ export const LeadMagnet = () => {
     // Trigger download
     const a = document.createElement("a");
     a.href = PDF_URL;
-    a.download = "guide-debt-solutions.pdf";
+    a.download = PDF_FILE_NAME;
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -100,7 +101,7 @@ export const LeadMagnet = () => {
                 <FileText className="h-7 w-7 text-accent" />
               </div>
               <div className="min-w-0">
-                <div className="font-semibold text-primary truncate">guide-debt-solutions.pdf</div>
+                <div className="font-semibold text-primary truncate">{PDF_FILE_NAME}</div>
                 <div className="text-xs text-muted-foreground">5 страниц · 60 КБ · A4</div>
               </div>
             </div>
@@ -125,7 +126,7 @@ export const LeadMagnet = () => {
                 </p>
                 <a
                   href={PDF_URL}
-                  download="guide-debt-solutions.pdf"
+                  download={PDF_FILE_NAME}
                   className="inline-flex items-center gap-2 text-primary font-semibold hover:text-accent transition-smooth"
                 >
                   <Download className="h-4 w-4" />

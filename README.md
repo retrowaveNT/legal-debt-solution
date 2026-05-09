@@ -34,7 +34,7 @@ npm run start
 - `RESEND_FROM_EMAIL` (опционально, подтвержденный отправитель в Resend)
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
-- `APP_URL` — URL фронтенда (для ссылок в Telegram)
+- `APP_URL` — URL фронтенда (для ссылок в Telegram и PDF-гайда в письме)
 - `ORG_SITE` — публичный сайт компании для ссылок в письмах (например, `https://лояльность.com`)
 - `ORG_ADDRESS` — адрес компании для подписи в письмах
 - `ORG_LOGO_URL` — URL логотипа для писем

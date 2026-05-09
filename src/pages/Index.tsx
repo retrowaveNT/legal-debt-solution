@@ -349,11 +349,11 @@ const Index = () => {
       </section>
 
       {/* ============ 6. СПИКЕР ============ */}
-      <section className="py-12 lg:py-16 bg-background">
+      <section className="py-10 lg:py-12 bg-background">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-12 gap-8 lg:gap-10 items-start max-w-6xl mx-auto">
-            <motion.div {...fadeUp} className="lg:col-span-5 lg:sticky lg:top-8 self-start">
-              <div className="relative max-w-sm mx-auto lg:mx-0">
+          <div className="grid lg:grid-cols-12 gap-6 lg:gap-8 items-start max-w-6xl mx-auto">
+            <motion.div {...fadeUp} className="lg:col-span-4 lg:sticky lg:top-8 self-start">
+              <div className="relative max-w-xs mx-auto lg:mx-0">
                 <div className="absolute -inset-3 bg-gradient-accent rounded-3xl opacity-10 blur-xl" />
                 <div className="relative">
                   <SpeakerSlider />
@@ -364,31 +364,31 @@ const Index = () => {
               </div>
             </motion.div>
 
-            <motion.div {...fadeUp} className="lg:col-span-7">
+            <motion.div {...fadeUp} className="lg:col-span-8">
               <div className="text-xs uppercase tracking-[0.2em] text-accent font-semibold mb-4">
                 Спикер вебинара
               </div>
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-3 text-balance">
+              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-primary mb-2 text-balance">
                 Александр Вячеславович
               </h2>
-              <div className="text-base text-primary/70 font-medium mb-5">
+              <div className="text-base text-primary/70 font-medium mb-4">
                 Практикующий юрист · юридическая компания «Лояльность»
               </div>
 
               {/* Краткая биография */}
-              <p className="text-base sm:text-lg text-muted-foreground mb-4 leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground mb-3 leading-relaxed">
                 Александр специализируется на&nbsp;кредитных и&nbsp;долговых обязательствах. Работает
                 с&nbsp;ситуациями, в&nbsp;которых важно разобраться в&nbsp;деталях: кредиты, микрозаймы,
                 просрочки, общение с&nbsp;кредиторами и&nbsp;коллекторами.
               </p>
-              <p className="text-base sm:text-lg text-muted-foreground mb-7 leading-relaxed">
+              <p className="text-base sm:text-lg text-muted-foreground mb-5 leading-relaxed">
                 Подход — без обещаний и&nbsp;давления: разбор ситуации, объяснение возможных
                 законных вариантов и&nbsp;их&nbsp;последствий. Окончательное решение всегда остаётся
                 за&nbsp;клиентом.
               </p>
 
               {/* Маркеры компетенций */}
-              <div className="space-y-3 mb-7">
+              <div className="space-y-2.5 mb-5">
                 {[
                   {
                     icon: Scale,
@@ -408,10 +408,10 @@ const Index = () => {
                 ].map((s, i) => (
                   <div
                     key={i}
-                    className="flex items-start gap-4 p-4 rounded-xl bg-surface border border-border"
+                    className="flex items-start gap-3 p-3 rounded-xl bg-surface border border-border"
                   >
-                    <div className="h-10 w-10 shrink-0 rounded-lg bg-card border border-border flex items-center justify-center text-accent">
-                      <s.icon className="h-5 w-5" />
+                    <div className="h-9 w-9 shrink-0 rounded-lg bg-card border border-border flex items-center justify-center text-accent">
+                      <s.icon className="h-4 w-4" />
                     </div>
                     <div>
                       <div className="font-display font-bold text-primary mb-0.5">{s.t}</div>
@@ -422,13 +422,13 @@ const Index = () => {
               </div>
 
               {/* Релевантный опыт */}
-              <div className="grid sm:grid-cols-3 gap-3 mb-7">
+              <div className="grid sm:grid-cols-3 gap-3 mb-5">
                 {[
                   { icon: Award, t: "Профильное", d: "юридическое образование" },
                   { icon: Briefcase, t: "Многолетняя", d: "практика в долговой сфере" },
                   { icon: Users, t: "Десятки", d: "сопровождённых дел клиентов" },
                 ].map((s, i) => (
-                  <div key={i} className="p-4 rounded-xl bg-card border border-border">
+                  <div key={i} className="p-3 rounded-xl bg-card border border-border">
                     <s.icon className="h-5 w-5 text-accent mb-2" />
                     <div className="font-display text-base font-bold text-primary leading-tight">
                       {s.t}
@@ -439,7 +439,7 @@ const Index = () => {
               </div>
 
               {/* Кейс-описание (нейтральный тон) */}
-              <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-card p-6 shadow-soft">
+              <div className="rounded-2xl border border-border bg-gradient-to-br from-surface to-card p-5 shadow-soft">
                 <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-accent font-semibold mb-3">
                   <FileText className="h-4 w-4" />
                   Пример из практики · в&nbsp;рамках закона
