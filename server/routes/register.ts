@@ -157,8 +157,12 @@ const sendEmail = async ({ to, subject, html }: { to: string; subject: string; h
 };
 
 const sendTelegramNotification = async (text: string) => {
-  const botToken = requireEnv("TELEGRAM_BOT_TOKEN");
-  const chatId = requireEnv("TELEGRAM_CHAT_ID");
+  const botToken = process.env.TELEGRAM_BOT_TOKEN;
+  const chatId = process.env.TELEGRAM_CHAT_ID;
+  if (!botToken || !chatId) {
+    console.warn("Telegram is not configured: TELEGRAM_BOT_TOKEN or TELEGRAM_CHAT_ID is missing");
+    return;
+  }
   const telegramApiBase = process.env.TELEGRAM_API_BASE ?? "https://api.telegram.org";
 
   const telegramResponse = await fetch(`${telegramApiBase}/bot${botToken}/sendMessage`, {
@@ -228,24 +232,27 @@ const runPresenceSync = async () => {
 
   try {
     const viewers = await fetchBizonViewers();
+    const prevConnected = new Map(currentlyConnectedViewers);
     const nextConnected = new Map<string, { name: string; phone: string }>();
 
     for (const viewer of viewers) {
-      if (!viewer.phone) continue;
-      const id = normalizePhoneToId(viewer.phone);
+      const rawPhone = viewer.phone?.trim() ?? "";
+      const phoneId = rawPhone ? normalizePhoneToId(rawPhone) : "";
+      const fallbackId = `${(viewer.email ?? "").trim().toLowerCase()}|${formatViewerName(viewer.name)}`;
+      const id = phoneId || fallbackId;
       if (!id) continue;
 
-      const normalized = { name: formatViewerName(viewer.name), phone: viewer.phone };
+      const normalized = { name: formatViewerName(viewer.name), phone: rawPhone || "Не указан" };
       nextConnected.set(id, normalized);
     }
 
     for (const [id, viewer] of nextConnected.entries()) {
-      if (!currentlyConnectedViewers.has(id)) {
+      if (!prevConnected.has(id)) {
         await sendTelegramNotification(["🟢 Подключился к вебинару", `Имя: ${viewer.name}`, `Телефон: ${viewer.phone}`].join("\n"));
       }
     }
 
-    for (const [id, viewer] of currentlyConnectedViewers.entries()) {
+    for (const [id, viewer] of prevConnected.entries()) {
       if (!nextConnected.has(id)) {
         await sendTelegramNotification(["🔴 Отключился от вебинара", `Имя: ${viewer.name}`, `Телефон: ${viewer.phone}`].join("\n"));
       }
@@ -264,6 +271,7 @@ const runPresenceSync = async () => {
 
 const PRESENCE_SYNC_INTERVAL_MS = Number(process.env.BIZON_PRESENCE_SYNC_INTERVAL_MS ?? 5_000);
 if (PRESENCE_SYNC_INTERVAL_MS > 0) {
+  void runPresenceSync();
   setInterval(() => {
     void runPresenceSync();
   }, PRESENCE_SYNC_INTERVAL_MS);
