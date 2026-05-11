@@ -11,8 +11,14 @@ interface LeadMagnetBody {
   name?: string;
   email?: string;
 }
+interface BizonViewer {
+  name?: string;
+  email?: string;
+  phone?: string;
+}
 
 const router = Router();
+const attendanceNotifiedIds = new Set<string>();
 
 const toBool = (value: string | undefined, fallback: boolean) => {
   if (!value) return fallback;
@@ -48,6 +54,15 @@ const buildYandexCalendarLink = ({ name }: { name: string }) => {
   });
 
   return `https://calendar.yandex.ru/event?${params.toString()}`;
+};
+
+const normalizePhoneToId = (phone: string) => {
+  const digits = phone.replace(/\D/g, "");
+  if (digits.length > 10 && digits.startsWith("7")) {
+    return digits.slice(1);
+  }
+
+  return digits.length > 10 ? digits.slice(-10) : digits;
 };
 
 const escapeHtml = (value: string) =>
@@ -133,6 +148,37 @@ const sendTelegramNotification = async (text: string) => {
   }
 };
 
+const fetchBizonViewers = async () => {
+  const projectId = requireEnv("BIZON_PROJECT_ID");
+  const webinarId = requireEnv("BIZON_WEBINAR_ID");
+  const token = requireEnv("BIZON_API_TOKEN");
+  const limit = Number(process.env.BIZON_LIMIT ?? 100);
+
+  let skip = 0;
+  let total = Number.POSITIVE_INFINITY;
+  const allViewers: BizonViewer[] = [];
+
+  while (allViewers.length < total) {
+    const viewersUrl = `https://online.bizon365.ru/api/v2/${projectId}/reports/getviewers?webinarId=${encodeURIComponent(webinarId)}&skip=${skip}&limit=${limit}`;
+    const viewersResp = await fetch(viewersUrl, { headers: { "X-Token": token }, signal: AbortSignal.timeout(20_000) });
+    if (!viewersResp.ok) {
+      throw new Error(`Bizon viewers fetch failed: ${viewersResp.status} ${viewersResp.statusText}`);
+    }
+
+    const viewersData = (await viewersResp.json()) as { viewers?: BizonViewer[]; total?: number };
+    const batch = viewersData.viewers ?? [];
+    allViewers.push(...batch);
+    total = viewersData.total ?? allViewers.length;
+    skip += limit;
+
+    if (batch.length === 0) {
+      break;
+    }
+  }
+
+  return allViewers;
+};
+
 const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: string }) => `
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
@@ -202,6 +248,11 @@ router.post("/register", async (req, res) => {
       return res.status(400).json({ success: false });
     }
 
+    const leadId = normalizePhoneToId(phone);
+    const ownerEmail = process.env.WEBINAR_LEADS_EMAIL ?? "info@лояльность.com";
+    const leadEmail = email.trim() || "Почты нет";
+    const ownerPayload = `${leadId}| ${name}| ${phone}| ${leadEmail}`;
+
     res.json({ success: true });
 
     void (async () => {
@@ -217,8 +268,36 @@ router.post("/register", async (req, res) => {
       }
 
       try {
+        await sendEmail({
+          to: ownerEmail,
+          subject: "Новая регистрация на вебинар",
+          html: `<p>${escapeHtml(ownerPayload)}</p>`,
+        });
+      } catch (ownerEmailError) {
+        console.error("Owner lead email error", ownerEmailError);
+      }
+
+      try {
+        const viewers = await fetchBizonViewers();
+        const viewersIds = viewers
+          .map((viewer) => viewer.phone)
+          .filter((viewerPhone): viewerPhone is string => Boolean(viewerPhone))
+          .map((viewerPhone) => normalizePhoneToId(viewerPhone));
+
+        if (viewersIds.includes(leadId) && !attendanceNotifiedIds.has(leadId)) {
+          attendanceNotifiedIds.add(leadId);
+          await sendTelegramNotification(
+            ["✅ Участник пришел на вебинар", `ID: ${leadId}`, `Имя: ${name}`, `Телефон: ${phone}`, `Email: ${leadEmail}`].join("\n"),
+          );
+        }
+      } catch (bizonError) {
+        console.error("Bizon viewers sync error", bizonError);
+      }
+
+      try {
         await sendTelegramNotification([
           "Новая заявка на вебинар",
+          `ID: ${leadId}`,
           `Имя: ${name}`,
           `Email: ${email}`,
           `Телефон: ${phone}`,
@@ -266,6 +345,31 @@ router.post("/lead-magnet", async (req, res) => {
     return;
   } catch (error) {
     console.error("Lead magnet route error", error);
+    return res.status(500).json({ success: false });
+  }
+});
+
+router.post("/webinar/sync-attendance", async (_req, res) => {
+  try {
+    const viewers = await fetchBizonViewers();
+    let sent = 0;
+
+    for (const viewer of viewers) {
+      if (!viewer.phone) continue;
+      const viewerId = normalizePhoneToId(viewer.phone);
+      if (!viewerId || attendanceNotifiedIds.has(viewerId)) continue;
+
+      attendanceNotifiedIds.add(viewerId);
+      sent += 1;
+
+      await sendTelegramNotification(
+        ["✅ Участник пришел на вебинар", `ID: ${viewerId}`, `Имя: ${viewer.name ?? "Не указано"}`, `Телефон: ${viewer.phone}`, `Email: ${viewer.email ?? "Почты нет"}`].join("\n"),
+      );
+    }
+
+    return res.json({ success: true, processed: viewers.length, sent });
+  } catch (error) {
+    console.error("Webinar attendance sync error", error);
     return res.status(500).json({ success: false });
   }
 });
