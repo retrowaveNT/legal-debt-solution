@@ -42,6 +42,7 @@ const ORG_ADDRESS = process.env.ORG_ADDRESS ?? "г. Екатеринбург, у
 const ORG_LOGO_URL = process.env.ORG_LOGO_URL ?? "https://legal-debt-solution.onrender.com/assets/logo-C6wkK0x0.png";
 const ORG_SPEAKER_IMAGE_URL = process.env.ORG_SPEAKER_IMAGE_URL ?? "https://legal-debt-solution.onrender.com/assets/speaker-oa9mlwt4.jpg";
 const PDF_FILE_NAME = "Первые 7 шагов для решения проблем с долгами.pdf";
+const WEBINAR_JOIN_URL = process.env.WEBINAR_JOIN_URL ?? "https://start.bizon365.ru/room/207663/133728";
 
 const buildYandexCalendarLink = ({ name }: { name: string }) => {
   const params = new URLSearchParams({
@@ -56,6 +57,22 @@ const buildYandexCalendarLink = ({ name }: { name: string }) => {
   return `https://calendar.yandex.ru/event?${params.toString()}`;
 };
 
+<<<<<<< codex/implement-webinar-registration-and-notification-system-4d99lp
+const buildGoogleCalendarLink = ({ name }: { name: string }) => {
+  const params = new URLSearchParams({
+    action: "TEMPLATE",
+    text: "Вебинар: 3 законных способа решить проблему с долгами",
+    details: `Здравствуйте, ${name}!\n\nВы зарегистрированы на вебинар ЮК «Лояльность».`,
+    location: "Онлайн",
+    dates: "20260515T140000Z/20260515T150000Z",
+    ctz: "Europe/Moscow",
+  });
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+};
+
+=======
+>>>>>>> main
 const normalizePhoneToId = (phone: string) => {
   const digits = phone.replace(/\D/g, "");
   if (digits.length > 10 && digits.startsWith("7")) {
@@ -179,7 +196,11 @@ const fetchBizonViewers = async () => {
   return allViewers;
 };
 
+<<<<<<< codex/implement-webinar-registration-and-notification-system-4d99lp
+const webinarEmailHtml = ({ name, yandexCalendarLink, googleCalendarLink }: { name: string; yandexCalendarLink: string; googleCalendarLink: string }) => `
+=======
 const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: string }) => `
+>>>>>>> main
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
       <div style="padding:18px 24px;background:#ffffff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;">
@@ -199,7 +220,11 @@ const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: 
           <div><strong>Время:</strong> 17:00 МСК</div>
           <div><strong>Формат:</strong> онлайн</div>
         </div>
-        <a href="${calendarLink}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#e11d48;color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;">Добавить в Яндекс Календарь</a>
+        <p style="margin:0 0 14px;"><strong>Ссылка на вебинар:</strong> <a href="${WEBINAR_JOIN_URL}" target="_blank" rel="noopener noreferrer" style="color:#1d4ed8;text-decoration:none;">${WEBINAR_JOIN_URL}</a></p>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <a href="${yandexCalendarLink}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#e11d48;color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;">Добавить в Яндекс Календарь</a>
+          <a href="${googleCalendarLink}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#0f9d58;color:#fff;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700;">Добавить в Google Календарь</a>
+        </div>
         <h3 style="margin:26px 0 8px;font-size:18px;color:#0f172a;">Что будет на вебинаре</h3>
         <ul style="margin:0 0 18px 18px;padding:0;">
           <li>3 законных стратегии решения долговой нагрузки</li>
@@ -257,11 +282,12 @@ router.post("/register", async (req, res) => {
 
     void (async () => {
       try {
-        const calendarLink = buildYandexCalendarLink({ name });
+        const yandexCalendarLink = buildYandexCalendarLink({ name });
+        const googleCalendarLink = buildGoogleCalendarLink({ name });
         await sendEmail({
           to: email,
           subject: "Вы зарегистрированы на вебинар — ЮК Лояльность",
-          html: webinarEmailHtml({ name, calendarLink }),
+          html: webinarEmailHtml({ name, yandexCalendarLink, googleCalendarLink }),
         });
       } catch (emailError) {
         console.error("Confirmation email error", emailError);
