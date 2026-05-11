@@ -57,6 +57,7 @@ const buildYandexCalendarLink = ({ name }: { name: string }) => {
   return `https://calendar.yandex.ru/event?${params.toString()}`;
 };
 
+<<<<<<< codex/implement-webinar-registration-and-notification-system-4d99lp
 const buildGoogleCalendarLink = ({ name }: { name: string }) => {
   const params = new URLSearchParams({
     action: "TEMPLATE",
@@ -70,6 +71,8 @@ const buildGoogleCalendarLink = ({ name }: { name: string }) => {
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 };
 
+=======
+>>>>>>> main
 const normalizePhoneToId = (phone: string) => {
   const digits = phone.replace(/\D/g, "");
   if (digits.length > 10 && digits.startsWith("7")) {
@@ -193,7 +196,11 @@ const fetchBizonViewers = async () => {
   return allViewers;
 };
 
+<<<<<<< codex/implement-webinar-registration-and-notification-system-4d99lp
 const webinarEmailHtml = ({ name, yandexCalendarLink, googleCalendarLink }: { name: string; yandexCalendarLink: string; googleCalendarLink: string }) => `
+=======
+const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: string }) => `
+>>>>>>> main
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
       <div style="padding:18px 24px;background:#ffffff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;">
