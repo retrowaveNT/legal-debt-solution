@@ -1,5 +1,6 @@
 import { Router } from "express";
 import nodemailer from "nodemailer";
+import punycode from "node:punycode";
 
 interface RegisterBody {
   name?: string;
@@ -57,7 +58,6 @@ const buildYandexCalendarLink = ({ name }: { name: string }) => {
   return `https://calendar.yandex.ru/event?${params.toString()}`;
 };
 
-<<<<<<< codex/implement-webinar-registration-and-notification-system-4d99lp
 const buildGoogleCalendarLink = ({ name }: { name: string }) => {
   const params = new URLSearchParams({
     action: "TEMPLATE",
@@ -71,8 +71,6 @@ const buildGoogleCalendarLink = ({ name }: { name: string }) => {
   return `https://calendar.google.com/calendar/render?${params.toString()}`;
 };
 
-=======
->>>>>>> main
 const normalizePhoneToId = (phone: string) => {
   const digits = phone.replace(/\D/g, "");
   if (digits.length > 10 && digits.startsWith("7")) {
@@ -119,6 +117,15 @@ const sendEmail = async ({ to, subject, html }: { to: string; subject: string; h
   const resendFrom = process.env.RESEND_FROM_EMAIL;
 
   if (resendApiKey && resendFrom) {
+    const normalizeEmailForApi = (rawEmail: string) => {
+      const normalized = rawEmail.trim();
+      const atIndex = normalized.lastIndexOf("@");
+      if (atIndex === -1) return normalized;
+      const localPart = normalized.slice(0, atIndex);
+      const domain = normalized.slice(atIndex + 1);
+      return `${localPart}@${punycode.toASCII(domain)}`;
+    };
+
     const response = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -127,7 +134,7 @@ const sendEmail = async ({ to, subject, html }: { to: string; subject: string; h
       },
       body: JSON.stringify({
         from: resendFrom,
-        to: [to],
+        to: [normalizeEmailForApi(to)],
         subject,
         html,
       }),
@@ -167,9 +174,24 @@ const sendTelegramNotification = async (text: string) => {
 
 const fetchBizonViewers = async () => {
   const projectId = requireEnv("BIZON_PROJECT_ID");
-  const webinarId = requireEnv("BIZON_WEBINAR_ID");
   const token = requireEnv("BIZON_API_TOKEN");
   const limit = Number(process.env.BIZON_LIMIT ?? 100);
+  const listLimit = Number(process.env.BIZON_LIST_LIMIT ?? 100);
+
+  const listUrl = `https://online.bizon365.ru/api/v2/${projectId}/reports/getlist?skip=0&limit=${listLimit}`;
+  const listResp = await fetch(listUrl, { headers: { "X-Token": token }, signal: AbortSignal.timeout(20_000) });
+  if (!listResp.ok) {
+    throw new Error(`Bizon list fetch failed: ${listResp.status} ${listResp.statusText}`);
+  }
+
+  const listData = (await listResp.json()) as { list?: Array<{ webinarId?: string; created?: string }> };
+  const reports = (listData.list ?? []).filter((item) => item.webinarId);
+  if (reports.length === 0) {
+    throw new Error("Bizon list fetch returned no webinars");
+  }
+
+  reports.sort((a, b) => new Date(b.created ?? 0).getTime() - new Date(a.created ?? 0).getTime());
+  const webinarId = reports[0].webinarId as string;
 
   let skip = 0;
   let total = Number.POSITIVE_INFINITY;
@@ -196,11 +218,7 @@ const fetchBizonViewers = async () => {
   return allViewers;
 };
 
-<<<<<<< codex/implement-webinar-registration-and-notification-system-4d99lp
 const webinarEmailHtml = ({ name, yandexCalendarLink, googleCalendarLink }: { name: string; yandexCalendarLink: string; googleCalendarLink: string }) => `
-=======
-const webinarEmailHtml = ({ name, calendarLink }: { name: string; calendarLink: string }) => `
->>>>>>> main
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
       <div style="padding:18px 24px;background:#ffffff;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;gap:12px;">
