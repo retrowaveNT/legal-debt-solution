@@ -20,6 +20,8 @@ interface BizonViewer {
 
 const router = Router();
 const attendanceNotifiedIds = new Set<string>();
+const currentlyConnectedViewers = new Map<string, { name: string; phone: string }>();
+let isPresenceSyncRunning = false;
 
 const toBool = (value: string | undefined, fallback: boolean) => {
   if (!value) return fallback;
@@ -217,6 +219,55 @@ const fetchBizonViewers = async () => {
 
   return allViewers;
 };
+
+const formatViewerName = (name?: string) => (name && name.trim() ? name.trim() : "Не указано");
+
+const runPresenceSync = async () => {
+  if (isPresenceSyncRunning) return;
+  isPresenceSyncRunning = true;
+
+  try {
+    const viewers = await fetchBizonViewers();
+    const nextConnected = new Map<string, { name: string; phone: string }>();
+
+    for (const viewer of viewers) {
+      if (!viewer.phone) continue;
+      const id = normalizePhoneToId(viewer.phone);
+      if (!id) continue;
+
+      const normalized = { name: formatViewerName(viewer.name), phone: viewer.phone };
+      nextConnected.set(id, normalized);
+    }
+
+    for (const [id, viewer] of nextConnected.entries()) {
+      if (!currentlyConnectedViewers.has(id)) {
+        await sendTelegramNotification(["🟢 Подключился к вебинару", `Имя: ${viewer.name}`, `Телефон: ${viewer.phone}`].join("\n"));
+      }
+    }
+
+    for (const [id, viewer] of currentlyConnectedViewers.entries()) {
+      if (!nextConnected.has(id)) {
+        await sendTelegramNotification(["🔴 Отключился от вебинара", `Имя: ${viewer.name}`, `Телефон: ${viewer.phone}`].join("\n"));
+      }
+    }
+
+    currentlyConnectedViewers.clear();
+    for (const [id, viewer] of nextConnected.entries()) {
+      currentlyConnectedViewers.set(id, viewer);
+    }
+  } catch (error) {
+    console.error("Webinar presence sync interval error", error);
+  } finally {
+    isPresenceSyncRunning = false;
+  }
+};
+
+const PRESENCE_SYNC_INTERVAL_MS = Number(process.env.BIZON_PRESENCE_SYNC_INTERVAL_MS ?? 5_000);
+if (PRESENCE_SYNC_INTERVAL_MS > 0) {
+  setInterval(() => {
+    void runPresenceSync();
+  }, PRESENCE_SYNC_INTERVAL_MS);
+}
 
 const webinarEmailHtml = ({ name, yandexCalendarLink, googleCalendarLink }: { name: string; yandexCalendarLink: string; googleCalendarLink: string }) => `
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
