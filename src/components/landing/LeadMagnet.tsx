@@ -8,10 +8,15 @@ import { BellOff, CheckCircle2, Download, FileText, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { postJsonToApi } from "@/lib/api";
 
 const schema = z.object({
   name: z.string().trim().min(2, { message: "Минимум 2 символа" }).max(60),
-  email: z.string().trim().email({ message: "Введите корректный email" }).max(120),
+  email: z
+    .string()
+    .trim()
+    .email({ message: "Введите корректный email" })
+    .max(120),
 });
 type Values = z.infer<typeof schema>;
 
@@ -26,8 +31,6 @@ const features = [
   "Список документов, которые стоит подготовить",
 ];
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
-
 export const LeadMagnet = () => {
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -39,15 +42,10 @@ export const LeadMagnet = () => {
 
   const onSubmit = async (values: Values) => {
     setSubmitError(null);
-    const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/lead-magnet` : "/api/lead-magnet";
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(values),
-    });
-
-    if (!response.ok) {
+    try {
+      await postJsonToApi<{ success?: boolean }>("/api/lead-magnet", values);
+    } catch (error) {
+      console.error("Lead magnet submit error", error);
       setSubmitError("Не удалось отправить заявку. Попробуйте ещё раз.");
       return;
     }
@@ -82,13 +80,17 @@ export const LeadMagnet = () => {
               5 законных вариантов решения долгов&nbsp;— в&nbsp;одном PDF
             </h2>
             <p className="text-lg text-muted-foreground mb-5 leading-relaxed">
-              Краткий обзор каждого пути, возможные последствия и&nbsp;чек-лист «Первые&nbsp;7&nbsp;шагов».
-              Можно сохранить и&nbsp;вернуться позже.
+              Краткий обзор каждого пути, возможные последствия и&nbsp;чек-лист
+              «Первые&nbsp;7&nbsp;шагов». Можно сохранить и&nbsp;вернуться
+              позже.
             </p>
 
             <ul className="space-y-2 mb-5">
               {features.map((f) => (
-                <li key={f} className="flex items-start gap-3 text-foreground/85">
+                <li
+                  key={f}
+                  className="flex items-start gap-3 text-foreground/85"
+                >
                   <CheckCircle2 className="h-5 w-5 text-accent shrink-0 mt-0.5" />
                   <span>{f}</span>
                 </li>
@@ -101,8 +103,12 @@ export const LeadMagnet = () => {
                 <FileText className="h-7 w-7 text-accent" />
               </div>
               <div className="min-w-0">
-                <div className="font-semibold text-primary truncate">{PDF_FILE_NAME}</div>
-                <div className="text-xs text-muted-foreground">5 страниц · 60 КБ · A4</div>
+                <div className="font-semibold text-primary truncate">
+                  {PDF_FILE_NAME}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  5 страниц · 60 КБ · A4
+                </div>
               </div>
             </div>
           </motion.div>
@@ -120,9 +126,12 @@ export const LeadMagnet = () => {
                 <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent mb-4">
                   <CheckCircle2 className="h-8 w-8" />
                 </div>
-                <h3 className="font-display text-2xl font-bold text-primary mb-2">Гайд отправлен</h3>
+                <h3 className="font-display text-2xl font-bold text-primary mb-2">
+                  Гайд отправлен
+                </h3>
                 <p className="text-muted-foreground mb-5">
-                  Скачивание началось автоматически. Копия отправлена на ваш email.
+                  Скачивание началось автоматически. Копия отправлена на ваш
+                  email.
                 </p>
                 <a
                   href={PDF_URL}
@@ -149,7 +158,10 @@ export const LeadMagnet = () => {
 
                 <div className="space-y-4">
                   <div>
-                    <Label htmlFor="lm-name" className="text-sm font-medium text-primary">
+                    <Label
+                      htmlFor="lm-name"
+                      className="text-sm font-medium text-primary"
+                    >
                       Имя
                     </Label>
                     <Input
@@ -162,11 +174,16 @@ export const LeadMagnet = () => {
                       {...register("name")}
                     />
                     {errors.name && (
-                      <p className="text-xs text-destructive mt-1">{errors.name.message}</p>
+                      <p className="text-xs text-destructive mt-1">
+                        {errors.name.message}
+                      </p>
                     )}
                   </div>
                   <div>
-                    <Label htmlFor="lm-email" className="text-sm font-medium text-primary">
+                    <Label
+                      htmlFor="lm-email"
+                      className="text-sm font-medium text-primary"
+                    >
                       Email
                     </Label>
                     <Input
@@ -180,7 +197,9 @@ export const LeadMagnet = () => {
                       {...register("email")}
                     />
                     {errors.email && (
-                      <p className="text-xs text-destructive mt-1">{errors.email.message}</p>
+                      <p className="text-xs text-destructive mt-1">
+                        {errors.email.message}
+                      </p>
                     )}
                   </div>
 
@@ -194,7 +213,11 @@ export const LeadMagnet = () => {
                     <Download className="h-5 w-5" />
                     {isSubmitting ? "Готовим файл..." : "Получить PDF"}
                   </Button>
-                  {submitError && <p className="text-xs text-destructive mt-2">{submitError}</p>}
+                  {submitError && (
+                    <p className="text-xs text-destructive mt-2">
+                      {submitError}
+                    </p>
+                  )}
 
                   <div className="space-y-2 pt-1">
                     <div className="flex items-start gap-2">
@@ -213,7 +236,10 @@ export const LeadMagnet = () => {
                     <div className="flex items-start gap-2">
                       <BellOff className="h-3.5 w-3.5 text-accent mt-0.5 shrink-0" />
                       <p className="text-xs text-muted-foreground leading-relaxed">
-                        <span className="text-primary font-medium">Без спама.</span> Отписка в&nbsp;один клик.
+                        <span className="text-primary font-medium">
+                          Без спама.
+                        </span>{" "}
+                        Отписка в&nbsp;один клик.
                       </p>
                     </div>
                   </div>
