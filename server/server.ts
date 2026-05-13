@@ -1,10 +1,12 @@
 import "dotenv/config";
 import express from "express";
+import path from "node:path";
 import registerRouter from "./routes/register";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3001);
 const allowedOrigin = process.env.CORS_ORIGIN ?? "*";
+const clientDistPath = path.resolve(process.cwd(), "dist");
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -26,6 +28,15 @@ app.use("/api", registerRouter);
 
 app.get("/health", (_req, res) => {
   res.json({ ok: true });
+});
+
+app.use(express.static(clientDistPath));
+app.get("*", (req, res, next) => {
+  if (req.path.startsWith("/api")) {
+    return next();
+  }
+
+  return res.sendFile(path.join(clientDistPath, "index.html"));
 });
 
 app.listen(port, () => {
