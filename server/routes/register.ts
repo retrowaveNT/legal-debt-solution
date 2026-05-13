@@ -64,17 +64,16 @@ const requireEnv = (key: string): string => {
 const ORG_NAME = 'ЮК "Лояльность"';
 const ORG_PHONE = process.env.ORG_PHONE ?? "+79676399556";
 const ORG_EMAIL = process.env.ORG_EMAIL ?? "lawyer@лояльность.com";
-const APP_URL =
-  process.env.APP_URL ?? "https://legal-debt-solution.onrender.com";
+const APP_URL = process.env.APP_URL ?? "https://loyalnost.onrender.com";
 const ORG_SITE = process.env.ORG_SITE ?? "https://лояльность.com";
 const ORG_ADDRESS =
   process.env.ORG_ADDRESS ?? "г. Екатеринбург, ул. Кузнечная 92/2, офис 617";
 const ORG_LOGO_URL =
   process.env.ORG_LOGO_URL ??
-  "https://legal-debt-solution.onrender.com/assets/logo-C6wkK0x0.png";
+  "https://loyalnost.onrender.com/assets/logo-C6wkK0x0.png";
 const ORG_SPEAKER_IMAGE_URL =
   process.env.ORG_SPEAKER_IMAGE_URL ??
-  "https://legal-debt-solution.onrender.com/assets/speaker-oa9mlwt4.jpg";
+  "https://loyalnost.onrender.com/assets/speaker-oa9mlwt4.jpg";
 const PDF_FILE_NAME = "Первые 7 шагов для решения проблем с долгами.pdf";
 const WEBINAR_JOIN_URL =
   process.env.WEBINAR_JOIN_URL ??

@@ -34,7 +34,7 @@ npm run start
 - `RESEND_FROM_EMAIL` (опционально, подтвержденный отправитель в Resend)
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
-- `APP_URL` — URL фронтенда (для ссылок в Telegram и PDF-гайда в письме)
+- `APP_URL` — URL приложения (для текущего деплоя: `https://loyalnost.onrender.com`)
 - `ORG_SITE` — публичный сайт компании для ссылок в письмах (например, `https://лояльность.com`)
 - `ORG_ADDRESS` — адрес компании для подписи в письмах
 - `ORG_LOGO_URL` — URL логотипа для писем
@@ -47,7 +47,7 @@ npm run start
 
 Если фронтенд развёрнут отдельным Static Site, обязательно задайте переменную окружения:
 
-- `VITE_API_BASE_URL` — URL backend-сервиса на Render (например, `https://your-api.onrender.com`)
+- `VITE_API_BASE_URL` — URL API-сервиса на Render. Если API и фронтенд работают на `https://loyalnost.onrender.com`, переменную можно не задавать
 
 Без этой переменной статический хостинг может отдать `index.html` вместо `/api/register`, и форма покажет ошибку отправки. После изменения переменных перезапустите деплой обоих сервисов.
 
@@ -55,7 +55,7 @@ npm run start
 
 Если `VITE_API_BASE_URL` не задан, фронт использует относительный путь `/api/register` (через Vite proxy в режиме `npm run dev` или через единый Web Service в продакшене).
 
-
 API routes:
+
 - `POST /api/register` — регистрация на вебинар
 - `POST /api/lead-magnet` — отправка PDF-гида

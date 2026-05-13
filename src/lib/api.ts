@@ -3,8 +3,7 @@ const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(
   "",
 );
 const DEFAULT_API_BASE_URL = (
-  import.meta.env.VITE_DEFAULT_API_BASE_URL ??
-  "https://legal-debt-solution-backend.onrender.com"
+  import.meta.env.VITE_DEFAULT_API_BASE_URL ?? "https://loyalnost.onrender.com"
 ).replace(/\/$/, "");
 
 const unique = (values: string[]) => Array.from(new Set(values));
