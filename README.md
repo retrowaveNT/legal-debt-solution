@@ -4,14 +4,14 @@
 
 Чтобы форма регистрации работала в продакшене, фронтенд должен отправлять данные в API-сервис, а API должен разрешать CORS от домена фронтенда.
 
-### 1) Backend (Web Service)
+### 1) Backend + Frontend (Web Service)
 
-Создайте отдельный Web Service для `server/server.ts`.
+Рекомендуемый вариант — один Render Web Service: он отдаёт собранный фронтенд из `dist` и обрабатывает `/api/*` на том же домене. Так форма отправляет заявку на относительный путь `/api/register` без CORS и без обязательного `VITE_API_BASE_URL`.
 
 **Build Command:**
 
 ```bash
-npm ci
+npm ci && npm run build
 ```
 
 **Start Command:**
@@ -34,7 +34,7 @@ npm run start
 - `RESEND_FROM_EMAIL` (опционально, подтвержденный отправитель в Resend)
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
-- `APP_URL` — URL фронтенда (для ссылок в Telegram и PDF-гайда в письме)
+- `APP_URL` — URL приложения (для текущего деплоя: `https://loyalnost.onrender.com`)
 - `ORG_SITE` — публичный сайт компании для ссылок в письмах (например, `https://лояльность.com`)
 - `ORG_ADDRESS` — адрес компании для подписи в письмах
 - `ORG_LOGO_URL` — URL логотипа для писем
@@ -43,19 +43,19 @@ npm run start
 - `ORG_PHONE` (опционально, для подписи в письмах)
 - `ORG_EMAIL` (опционально, для подписи в письмах)
 
-### 2) Frontend (Static Site)
+### 2) Frontend как отдельный Static Site (если нужен)
 
-Для фронтенда задайте переменную окружения:
+Если фронтенд развёрнут отдельным Static Site, обязательно задайте переменную окружения:
 
-- `VITE_API_BASE_URL` — URL backend-сервиса на Render (например, `https://your-api.onrender.com`)
+- `VITE_API_BASE_URL` — URL API-сервиса на Render. Если API и фронтенд работают на `https://loyalnost.onrender.com`, переменную можно не задавать
 
-После изменения переменных перезапустите деплой обоих сервисов.
+Без этой переменной статический хостинг может отдать `index.html` вместо `/api/register`, и форма покажет ошибку отправки. После изменения переменных перезапустите деплой обоих сервисов.
 
 ### 3) Локальная разработка
 
-Если `VITE_API_BASE_URL` не задан, фронт использует относительный путь `/api/register` (через Vite proxy в режиме `npm run dev`).
-
+Если `VITE_API_BASE_URL` не задан, фронт использует относительный путь `/api/register` (через Vite proxy в режиме `npm run dev` или через единый Web Service в продакшене).
 
 API routes:
+
 - `POST /api/register` — регистрация на вебинар
 - `POST /api/lead-magnet` — отправка PDF-гида

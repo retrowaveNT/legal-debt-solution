@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { BellOff, CheckCircle2, Lock, ShieldCheck } from "lucide-react";
+import { postJsonToApi } from "@/lib/api";
 
 const schema = z.object({
   name: z
@@ -29,9 +30,11 @@ const schema = z.object({
 
 type FormValues = z.infer<typeof schema>;
 
-const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
-
-export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => {
+export const RegistrationForm = ({
+  compact = false,
+}: {
+  compact?: boolean;
+}) => {
   const [done, setDone] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const {
@@ -44,29 +47,7 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
     setSubmitError(null);
 
     try {
-      const endpoint = API_BASE_URL ? `${API_BASE_URL}/api/register` : "/api/register";
-
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(values),
-      });
-
-      const rawBody = await response.text();
-      let data: { success?: boolean } | undefined;
-
-      try {
-        data = rawBody ? (JSON.parse(rawBody) as { success?: boolean }) : undefined;
-      } catch (parseError) {
-        console.error("Registration response parse error", parseError, rawBody);
-      }
-
-      if (!response.ok || !data?.success) {
-        throw new Error("Registration request failed");
-      }
-
+      await postJsonToApi<{ success?: boolean }>("/api/register", values);
       setDone(true);
     } catch (error) {
       console.error("Registration submit error", error);
@@ -80,7 +61,9 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
         <div className="inline-flex h-14 w-14 items-center justify-center rounded-full bg-accent/15 text-accent mb-4">
           <CheckCircle2 className="h-8 w-8" />
         </div>
-        <h3 className="font-display text-2xl font-bold text-primary mb-2">Вы записаны</h3>
+        <h3 className="font-display text-2xl font-bold text-primary mb-2">
+          Вы записаны
+        </h3>
         <p className="text-muted-foreground">
           Ссылка на вебинар придёт на email и в SMS за час до начала.
         </p>
@@ -97,7 +80,9 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
     >
       <div className="space-y-4">
         <div>
-          <Label htmlFor="name" className="text-sm font-medium text-primary">Имя</Label>
+          <Label htmlFor="name" className="text-sm font-medium text-primary">
+            Имя
+          </Label>
           <Input
             id="name"
             placeholder="Как к вам обращаться?"
@@ -107,10 +92,16 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
             spellCheck={false}
             {...register("name")}
           />
-          {errors.name && <p className="text-xs text-destructive mt-1">{errors.name.message}</p>}
+          {errors.name && (
+            <p className="text-xs text-destructive mt-1">
+              {errors.name.message}
+            </p>
+          )}
         </div>
         <div>
-          <Label htmlFor="phone" className="text-sm font-medium text-primary">Телефон</Label>
+          <Label htmlFor="phone" className="text-sm font-medium text-primary">
+            Телефон
+          </Label>
           <Input
             id="phone"
             type="tel"
@@ -120,10 +111,16 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
             autoComplete="tel"
             {...register("phone")}
           />
-          {errors.phone && <p className="text-xs text-destructive mt-1">{errors.phone.message}</p>}
+          {errors.phone && (
+            <p className="text-xs text-destructive mt-1">
+              {errors.phone.message}
+            </p>
+          )}
         </div>
         <div>
-          <Label htmlFor="email" className="text-sm font-medium text-primary">Email</Label>
+          <Label htmlFor="email" className="text-sm font-medium text-primary">
+            Email
+          </Label>
           <Input
             id="email"
             type="email"
@@ -134,7 +131,11 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
             spellCheck={false}
             {...register("email")}
           />
-          {errors.email && <p className="text-xs text-destructive mt-1">{errors.email.message}</p>}
+          {errors.email && (
+            <p className="text-xs text-destructive mt-1">
+              {errors.email.message}
+            </p>
+          )}
         </div>
 
         <Button
@@ -146,14 +147,19 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
         >
           {isSubmitting ? "Отправляем..." : "Принять участие"}
         </Button>
-        {submitError && <p className="text-xs text-destructive mt-2">{submitError}</p>}
+        {submitError && (
+          <p className="text-xs text-destructive mt-2">{submitError}</p>
+        )}
 
         <div className="space-y-2 pt-2">
           <div className="flex items-start gap-2">
             <Lock className="h-3.5 w-3.5 text-muted-foreground mt-0.5 shrink-0" />
             <p className="text-xs text-muted-foreground leading-relaxed">
               Нажимая кнопку, вы соглашаетесь с{" "}
-              <Link to="/privacy" className="text-primary underline underline-offset-2 hover:text-accent transition-smooth">
+              <Link
+                to="/privacy"
+                className="text-primary underline underline-offset-2 hover:text-accent transition-smooth"
+              >
                 политикой конфиденциальности
               </Link>
               . Данные защищены и не передаются третьим лицам.
@@ -162,8 +168,9 @@ export const RegistrationForm = ({ compact = false }: { compact?: boolean }) => 
           <div className="flex items-start gap-2">
             <BellOff className="h-3.5 w-3.5 text-accent mt-0.5 shrink-0" />
             <p className="text-xs text-muted-foreground leading-relaxed">
-              <span className="text-primary font-medium">Без спама.</span> Только материалы по теме вебинара —
-              отписка в один клик из любого письма.
+              <span className="text-primary font-medium">Без спама.</span>{" "}
+              Только материалы по теме вебинара — отписка в один клик из любого
+              письма.
             </p>
           </div>
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
