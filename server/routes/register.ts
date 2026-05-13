@@ -613,11 +613,20 @@ router.post("/register", async (req, res) => {
     const leadEmail = email.trim() || "Почты нет";
     const ownerPayload = `${leadId} | ${name} | ${phone} | ${leadEmail}`;
 
-    await upsertRegisteredLead({ id: leadId, name, phone, email: leadEmail });
-
     res.json({ success: true });
 
     void (async () => {
+      try {
+        await upsertRegisteredLead({
+          id: leadId,
+          name,
+          phone,
+          email: leadEmail,
+        });
+      } catch (storeError) {
+        console.error("Webinar lead store error", storeError);
+      }
+
       try {
         const yandexCalendarLink = buildYandexCalendarLink({ name });
         const googleCalendarLink = buildGoogleCalendarLink({ name });
