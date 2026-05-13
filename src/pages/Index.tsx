@@ -35,8 +35,8 @@ import { WebinarPopup } from "@/components/landing/WebinarPopup";
 import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
-// Дата вебинара: 15 мая 2026, 17:00 МСК
-const WEBINAR_DATE = new Date("2026-05-15T17:00:00+03:00");
+// Дата вебинара: 24 мая 2026, 17:00 МСК
+const WEBINAR_DATE = new Date("2026-05-24T17:00:00+03:00");
 const WEBINAR_DATE_STR = WEBINAR_DATE.toLocaleDateString("ru-RU", {
   day: "numeric",
   month: "long",
