@@ -31,6 +31,7 @@ interface WebinarLead {
   firstSeenAt?: string;
   lastSeenAt?: string;
   lastSyncedAt?: string;
+  attendanceNotifiedAt?: string;
   source: "registration" | "bizon";
   bizon?: BizonViewer;
 }
@@ -41,11 +42,7 @@ interface WebinarLeadsStore {
 }
 
 const router = Router();
-const attendanceNotifiedIds = new Set<string>();
-const currentlyConnectedViewers = new Map<
-  string,
-  { name: string; phone: string }
->();
+let hasAttendanceBaseline = false;
 let isPresenceSyncRunning = false;
 
 const toBool = (value: string | undefined, fallback: boolean) => {
@@ -82,6 +79,9 @@ const WEBINAR_DATE_TEXT = "24 мая 2026";
 const WEBINAR_YANDEX_START = "20260524T170000";
 const WEBINAR_YANDEX_END = "20260524T180000";
 const WEBINAR_GOOGLE_DATES = "20260524T140000Z/20260524T150000Z";
+const WEBINAR_START_AT = new Date(
+  process.env.WEBINAR_START_AT ?? "2026-05-24T14:00:00.000Z",
+);
 const CRM_LEADS_EMAIL = "lead.loyalnost@gmail.com";
 const WEBINAR_LEADS_FILE =
   process.env.WEBINAR_LEADS_FILE ??
@@ -201,6 +201,7 @@ const upsertRegisteredLead = async ({
       firstSeenAt: existing?.firstSeenAt,
       lastSeenAt: existing?.lastSeenAt,
       lastSyncedAt: existing?.lastSyncedAt,
+      attendanceNotifiedAt: existing?.attendanceNotifiedAt,
       source: "registration",
       bizon: existing?.bizon,
     };
@@ -243,6 +244,7 @@ const mergeBizonViewersIntoStore = async (viewers: BizonViewer[]) => {
         firstSeenAt: existing?.firstSeenAt ?? syncedAt,
         lastSeenAt: syncedAt,
         lastSyncedAt: syncedAt,
+        attendanceNotifiedAt: existing?.attendanceNotifiedAt,
         source: existing?.source ?? "bizon",
         bizon: viewer,
       };
@@ -262,6 +264,35 @@ const mergeBizonViewersIntoStore = async (viewers: BizonViewer[]) => {
 
     return store;
   });
+};
+
+const markAttendanceNotified = async (ids: string[]) => {
+  const uniqueIds = Array.from(new Set(ids.filter(Boolean)));
+  if (uniqueIds.length === 0) return new Set<string>();
+
+  const notifiedAt = new Date().toISOString();
+  const newlyNotifiedIds = new Set<string>();
+
+  await updateLeadsStore((store) => {
+    for (const id of uniqueIds) {
+      const existingIndex = store.leads.findIndex((lead) => lead.id === id);
+      const existing =
+        existingIndex >= 0 ? store.leads[existingIndex] : undefined;
+
+      if (!existing || existing.attendanceNotifiedAt) continue;
+
+      newlyNotifiedIds.add(id);
+      store.leads[existingIndex] = {
+        ...existing,
+        attended: true,
+        attendanceNotifiedAt: notifiedAt,
+      };
+    }
+
+    return store;
+  });
+
+  return newlyNotifiedIds;
 };
 
 const escapeHtml = (value: string) =>
@@ -457,57 +488,47 @@ const fetchBizonViewers = async () => {
 const formatViewerName = (name?: string) =>
   name && name.trim() ? name.trim() : "Не указано";
 
+const isWebinarAttendanceStarted = () => {
+  const startTime = WEBINAR_START_AT.getTime();
+  return Number.isFinite(startTime) && Date.now() >= startTime;
+};
+
 const runPresenceSync = async () => {
-  if (isPresenceSyncRunning) return;
+  if (isPresenceSyncRunning || !isWebinarAttendanceStarted()) return;
   isPresenceSyncRunning = true;
 
   try {
     const viewers = await fetchBizonViewers();
     await mergeBizonViewersIntoStore(viewers);
-    const prevConnected = new Map(currentlyConnectedViewers);
-    const nextConnected = new Map<string, { name: string; phone: string }>();
+    const viewerById = new Map<string, BizonViewer>();
 
     for (const viewer of viewers) {
-      const rawPhone = viewer.phone?.trim() ?? "";
-      const phoneId = rawPhone ? normalizePhoneToId(rawPhone) : "";
-      const fallbackId = `${(viewer.email ?? "").trim().toLowerCase()}|${formatViewerName(viewer.name)}`;
-      const id = phoneId || fallbackId;
-      if (!id) continue;
-
-      const normalized = {
-        name: formatViewerName(viewer.name),
-        phone: rawPhone || "Не указан",
-      };
-      nextConnected.set(id, normalized);
+      if (!viewer.phone) continue;
+      const viewerId = normalizePhoneToId(viewer.phone);
+      if (viewerId) viewerById.set(viewerId, viewer);
     }
 
-    for (const [id, viewer] of nextConnected.entries()) {
-      if (!prevConnected.has(id)) {
-        await sendTelegramNotification(
-          [
-            "🟢 Подключился к вебинару",
-            `Имя: ${viewer.name}`,
-            `Телефон: ${viewer.phone}`,
-          ].join("\n"),
-        );
-      }
+    const viewerIds = Array.from(viewerById.keys());
+    const newlyNotifiedIds = await markAttendanceNotified(viewerIds);
+
+    if (!hasAttendanceBaseline) {
+      hasAttendanceBaseline = true;
+      return;
     }
 
-    for (const [id, viewer] of prevConnected.entries()) {
-      if (!nextConnected.has(id)) {
-        await sendTelegramNotification(
-          [
-            "🔴 Отключился от вебинара",
-            `Имя: ${viewer.name}`,
-            `Телефон: ${viewer.phone}`,
-          ].join("\n"),
-        );
-      }
-    }
+    for (const viewerId of newlyNotifiedIds) {
+      const viewer = viewerById.get(viewerId);
+      if (!viewer) continue;
 
-    currentlyConnectedViewers.clear();
-    for (const [id, viewer] of nextConnected.entries()) {
-      currentlyConnectedViewers.set(id, viewer);
+      await sendTelegramNotification(
+        [
+          "✅ Участник пришел на вебинар",
+          `ID: ${viewerId}`,
+          `Имя: ${viewer.name ?? "Не указано"}`,
+          `Телефон: ${viewer.phone}`,
+          `Email: ${viewer.email ?? "Почты нет"}`,
+        ].join("\n"),
+      );
     }
   } catch (error) {
     console.error("Webinar presence sync interval error", error);
@@ -664,30 +685,6 @@ router.post("/register", async (req, res) => {
       }
 
       try {
-        const viewers = await fetchBizonViewers();
-        await mergeBizonViewersIntoStore(viewers);
-        const viewersIds = viewers
-          .map((viewer) => viewer.phone)
-          .filter((viewerPhone): viewerPhone is string => Boolean(viewerPhone))
-          .map((viewerPhone) => normalizePhoneToId(viewerPhone));
-
-        if (viewersIds.includes(leadId) && !attendanceNotifiedIds.has(leadId)) {
-          attendanceNotifiedIds.add(leadId);
-          await sendTelegramNotification(
-            [
-              "✅ Участник пришел на вебинар",
-              `ID: ${leadId}`,
-              `Имя: ${name}`,
-              `Телефон: ${phone}`,
-              `Email: ${leadEmail}`,
-            ].join("\n"),
-          );
-        }
-      } catch (bizonError) {
-        console.error("Bizon viewers sync error", bizonError);
-      }
-
-      try {
         await sendTelegramNotification(
           [
             "Новая заявка на вебинар",
@@ -750,18 +747,35 @@ router.post("/lead-magnet", async (req, res) => {
 
 router.post("/webinar/sync-attendance", async (_req, res) => {
   try {
+    if (!isWebinarAttendanceStarted()) {
+      return res.json({
+        success: true,
+        processed: 0,
+        sent: 0,
+        skipped: "webinar_not_started",
+      });
+    }
+
     const viewers = await fetchBizonViewers();
     await mergeBizonViewersIntoStore(viewers);
-    let sent = 0;
+    const viewerById = new Map<string, BizonViewer>();
 
     for (const viewer of viewers) {
       if (!viewer.phone) continue;
       const viewerId = normalizePhoneToId(viewer.phone);
-      if (!viewerId || attendanceNotifiedIds.has(viewerId)) continue;
+      if (viewerId) viewerById.set(viewerId, viewer);
+    }
 
-      attendanceNotifiedIds.add(viewerId);
+    const newlyNotifiedIds = await markAttendanceNotified(
+      Array.from(viewerById.keys()),
+    );
+    let sent = 0;
+
+    for (const viewerId of newlyNotifiedIds) {
+      const viewer = viewerById.get(viewerId);
+      if (!viewer) continue;
+
       sent += 1;
-
       await sendTelegramNotification(
         [
           "✅ Участник пришел на вебинар",

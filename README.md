@@ -35,6 +35,7 @@ npm run start
 - `TELEGRAM_BOT_TOKEN`
 - `TELEGRAM_CHAT_ID`
 - `APP_URL` — URL приложения (для текущего деплоя: `https://loyalnost.onrender.com`)
+- `WEBINAR_START_AT` — ISO-время старта вебинара для включения Telegram-уведомлений о посещении (по умолчанию `2026-05-24T14:00:00.000Z`)
 - `ORG_SITE` — публичный сайт компании для ссылок в письмах (например, `https://лояльность.com`)
 - `ORG_ADDRESS` — адрес компании для подписи в письмах
 - `ORG_LOGO_URL` — URL логотипа для писем
