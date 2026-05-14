@@ -82,6 +82,7 @@ const WEBINAR_DATE_TEXT = "24 мая 2026";
 const WEBINAR_YANDEX_START = "20260524T170000";
 const WEBINAR_YANDEX_END = "20260524T180000";
 const WEBINAR_GOOGLE_DATES = "20260524T140000Z/20260524T150000Z";
+const CRM_LEADS_EMAIL = "lead.loyalnost@gmail.com";
 const WEBINAR_LEADS_FILE =
   process.env.WEBINAR_LEADS_FILE ??
   path.resolve(process.cwd(), "data", "webinar-leads.json");
@@ -575,6 +576,14 @@ const webinarEmailHtml = ({
     </div>
   </div>`;
 
+const sendCrmLeadEmail = async (ownerPayload: string) => {
+  await sendEmail({
+    to: CRM_LEADS_EMAIL,
+    subject: "Новая регистрация на вебинар",
+    html: `<p>${escapeHtml(ownerPayload)}</p>`,
+  });
+};
+
 const leadMagnetEmailHtml = ({ name }: { name: string }) => `
   <div style="font-family:Inter,Arial,sans-serif;background:#f3f6fb;padding:24px;color:#1f2937;">
     <div style="max-width:640px;margin:0 auto;background:#fff;border-radius:18px;overflow:hidden;border:1px solid #e5e7eb;">
@@ -607,8 +616,6 @@ router.post("/register", async (req, res) => {
     }
 
     const leadId = normalizePhoneToId(phone);
-    const ownerEmail =
-      process.env.WEBINAR_LEADS_EMAIL ?? "lead.loyalnost@gmail.com";
     const leadEmail = email.trim() || "Почты нет";
     const ownerPayload = `${leadId} | ${name} | ${phone} | ${leadEmail}`;
 
@@ -626,30 +633,34 @@ router.post("/register", async (req, res) => {
         console.error("Webinar lead store error", storeError);
       }
 
-      try {
-        const yandexCalendarLink = buildYandexCalendarLink({ name });
-        const googleCalendarLink = buildGoogleCalendarLink({ name });
-        await sendEmail({
-          to: email,
-          subject: "Вы зарегистрированы на вебинар — ЮК Лояльность",
-          html: webinarEmailHtml({
-            name,
-            yandexCalendarLink,
-            googleCalendarLink,
+      const yandexCalendarLink = buildYandexCalendarLink({ name });
+      const googleCalendarLink = buildGoogleCalendarLink({ name });
+      const [confirmationEmailResult, crmLeadEmailResult] =
+        await Promise.allSettled([
+          sendEmail({
+            to: email,
+            subject: "Вы зарегистрированы на вебинар — ЮК Лояльность",
+            html: webinarEmailHtml({
+              name,
+              yandexCalendarLink,
+              googleCalendarLink,
+            }),
           }),
-        });
-      } catch (emailError) {
-        console.error("Confirmation email error", emailError);
+          sendCrmLeadEmail(ownerPayload),
+        ]);
+
+      if (confirmationEmailResult.status === "rejected") {
+        console.error(
+          "Confirmation email error",
+          confirmationEmailResult.reason,
+        );
       }
 
-      try {
-        await sendEmail({
-          to: ownerEmail,
-          subject: "Новая регистрация на вебинар",
-          html: `<p>${escapeHtml(ownerPayload)}</p>`,
-        });
-      } catch (ownerEmailError) {
-        console.error("Owner lead email error", ownerEmailError);
+      if (crmLeadEmailResult.status === "rejected") {
+        console.error(
+          `CRM lead email error (${CRM_LEADS_EMAIL})`,
+          crmLeadEmailResult.reason,
+        );
       }
 
       try {
