@@ -75,12 +75,12 @@ const PDF_FILE_NAME = "Первые 7 шагов для решения проб�
 const WEBINAR_JOIN_URL =
   process.env.WEBINAR_JOIN_URL ??
   "https://start.bizon365.ru/room/207663/133728";
-const WEBINAR_DATE_TEXT = "24 мая 2026";
-const WEBINAR_YANDEX_START = "20260524T170000";
-const WEBINAR_YANDEX_END = "20260524T180000";
-const WEBINAR_GOOGLE_DATES = "20260524T140000Z/20260524T150000Z";
+const WEBINAR_DATE_TEXT = "29 августа 2026";
+const WEBINAR_YANDEX_START = "20260829T150000";
+const WEBINAR_YANDEX_END = "20260829T160000";
+const WEBINAR_GOOGLE_DATES = "20260829T120000Z/20260829T130000Z";
 const WEBINAR_START_AT = new Date(
-  process.env.WEBINAR_START_AT ?? "2026-05-24T14:00:00.000Z",
+  process.env.WEBINAR_START_AT ?? "2026-08-29T12:00:00.000Z",
 );
 const CRM_LEADS_EMAIL = "lead.loyalnost@gmail.com";
 const WEBINAR_LEADS_FILE =
@@ -572,7 +572,7 @@ const webinarEmailHtml = ({
         <img src="${ORG_SPEAKER_IMAGE_URL}" alt="Спикер ЮК Лояльность" style="width:100%;max-width:592px;height:auto;border-radius:12px;margin:0 0 16px;display:block;"/>
         <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;padding:14px 16px;margin:0 0 18px;">
           <div><strong>Дата:</strong> ${WEBINAR_DATE_TEXT}</div>
-          <div><strong>Время:</strong> 17:00 МСК</div>
+          <div><strong>Время:</strong> 15:00 МСК</div>
           <div><strong>Формат:</strong> онлайн</div>
         </div>
         <p style="margin:0 0 14px;"><strong>Ссылка на вебинар:</strong> <a href="${WEBINAR_JOIN_URL}" target="_blank" rel="noopener noreferrer" style="color:#1d4ed8;text-decoration:none;">${WEBINAR_JOIN_URL}</a></p>
