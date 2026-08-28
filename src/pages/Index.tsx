@@ -35,13 +35,13 @@ import { WebinarPopup } from "@/components/landing/WebinarPopup";
 import { Link } from "react-router-dom";
 import speakerImg from "@/assets/speaker.jpg";
 
-// Дата вебинара: 24 мая 2026, 17:00 МСК
-const WEBINAR_DATE = new Date("2026-05-24T17:00:00+03:00");
+// Дата вебинара: 29 августа 2026, 15:00 МСК
+const WEBINAR_DATE = new Date("2026-08-29T15:00:00+03:00");
 const WEBINAR_DATE_STR = WEBINAR_DATE.toLocaleDateString("ru-RU", {
   day: "numeric",
   month: "long",
 });
-const WEBINAR_TIME_STR = "17:00 МСК";
+const WEBINAR_TIME_STR = "15:00 МСК";
 
 const fadeUp = {
   initial: { opacity: 0, y: 24 },
@@ -82,7 +82,7 @@ const Index = () => {
           <Logo variant="light" />
           <div className="hidden md:flex items-center gap-2 text-sm text-primary-foreground/70">
             <Calendar className="h-4 w-4" />
-            {WEBINAR_DATE_STR}, 17:00 МСК
+            {WEBINAR_DATE_STR}, {WEBINAR_TIME_STR}
           </div>
         </nav>
 
@@ -112,7 +112,7 @@ const Index = () => {
             <div className="flex flex-wrap items-center gap-4 mb-10 text-sm">
               <div className="flex items-center gap-2 text-primary-foreground/85">
                 <Calendar className="h-4 w-4 text-accent" />
-                {WEBINAR_DATE_STR}, 17:00 МСК
+                {WEBINAR_DATE_STR}, {WEBINAR_TIME_STR}
               </div>
               <div className="hidden sm:block h-1 w-1 rounded-full bg-primary-foreground/30" />
               <div className="flex items-center gap-2 text-primary-foreground/85">
